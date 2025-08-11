@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 
@@ -25,9 +25,7 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
-              <View style={styles.profileImage}>
-                <Text style={styles.profileInitial}>E</Text>
-              </View>
+              <Image source={require('../../assets/images/avatar.png')} alt="profile" style={styles.profileImage} />
               <View style={styles.moodIndicator}>
                 <Text style={styles.moodEmoji}>😊</Text>
               </View>
@@ -38,18 +36,6 @@ export default function HomeScreen() {
             </View>
           </View>
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="chatbubble-outline" size={20} color={colors.black} />
-              <View style={styles.notificationBadge}>
-                <Text style={styles.badgeText}>3</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="notifications-outline" size={20} color={colors.black} />
-              <View style={[styles.notificationBadge, { backgroundColor: colors.red }]}>
-                <Text style={styles.badgeText}>1</Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.userButton}>
               <Text style={styles.userButtonText}>User</Text>
               <Ionicons name="chevron-down" size={16} color={colors.black} />
