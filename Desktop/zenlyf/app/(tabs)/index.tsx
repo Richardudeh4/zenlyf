@@ -45,15 +45,22 @@ export default function HomeScreen() {
 
         {/* Mood Tracker */}
         <View style={styles.moodTracker}>
+          <View style={{display:"flex", width:"100%", flexDirection:"row", justifyContent:"space-between"}}>
+          <View>
           <Text style={styles.sectionTitle}>Mood Tracker</Text>
           <Text style={styles.sectionSubtitle}>(Let us know how you are feeling today)</Text>
-          <View style={styles.moodContainer}>
+          </View>
+          <View style={{display:"flex", flexDirection:"row", gap:4}}>
+          <Image source={require("../../assets/images/notification.png")} style={{width:43, height:42}}/>
+          <Image source={require("../../assets/images/alarm.png")} style={{width:43, height:44}}/>
+          </View>
+          </View>
+            <View style={{display:"flex", flexDirection:"row", gap:10}}>
             {moods.map((mood) => (
               <TouchableOpacity
                 key={mood.id}
                 style={[
-                  styles.moodButton,
-                  selectedMood === mood.id && styles.selectedMood
+                
                 ]}
                 onPress={() => setSelectedMood(mood.id)}
               >
@@ -61,13 +68,14 @@ export default function HomeScreen() {
               </TouchableOpacity>
             ))}
           </View>
+        
         </View>
 
         {/* Today's Overview Button */}
         <TouchableOpacity style={styles.overviewButton}
         onPress={() => router.push('/MainScreen')}
         >
-          <Ionicons name="bar-chart-outline" size={24} color={colors.white} />
+         <Image source={require("../../assets/images/monitoring.png")} style={{width:24, height:24}}/>
           <Text style={styles.overviewButtonText}>See Today's Overview</Text>
         </TouchableOpacity>
 
@@ -311,6 +319,9 @@ const styles = StyleSheet.create({
   moodTracker: {
     paddingHorizontal: 24,
     marginBottom: 20,
+    display:"flex",
+    flexDirection:"column",
+    gap:12,
   },
   sectionTitle: {
     fontSize: 18,
@@ -353,7 +364,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   overviewButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: fonts.onestMedium,
     color: colors.white,
     marginLeft: 8,
