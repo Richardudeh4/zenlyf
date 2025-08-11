@@ -19,8 +19,8 @@ const AccountSetup = () => {
     if (selectedRole) {
       // Set hasCompletedSetup to true since role selection is the only setup step
       setHasCompletedSetup(true);
-      // Redirect to sign-in screen
-      router.push('/(auth)/signin');
+      // Redirect to getStarted screen with the selected role as a query parameter
+      router.push(`/(auth)/getstarted?role=${selectedRole}`);
     }
     // Here you would navigate to the next step based on selected role
   };

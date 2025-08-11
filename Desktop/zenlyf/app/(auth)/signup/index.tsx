@@ -1,11 +1,11 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
 import AppHeader from '@/components/AppHeader'
-import P from '@/components/P'
-import Input from '@/components/Input'
 import Button from '@/components/Button'
 import Checkbox from '@/components/Checkbox'
+import Input from '@/components/Input'
+import P from '@/components/P'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import React, { useState } from 'react'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const index = () => {
   const { role } = useLocalSearchParams();
@@ -42,15 +42,18 @@ const index = () => {
         onPress={() => router.push(`/(auth)/signup/healthOnboarding1?role=${role}`) }
         btnText='Get Started'
         />
-        <View style={{display:"flex", flexDirection:"row",alignItems:"center", justifyContent:"center", paddingHorizontal:24, gap:14}}>
+        <View style={{display:"flex", flexDirection:"row", alignItems:"flex-start", justifyContent:"center", paddingHorizontal:24, gap:14}}>
             <Checkbox 
             borderColor='#0066E6'
             color='#C4E0FF'
             checked={false}
             onPress={() => {}}
             size="large"/>
-        <P style={{fontSize:14, fontWeight:"400",fontFamily:"",}}>I agree to Zenlyf's <Text style={{color:"#0077FF"}}>Terms & Conditions
-        Privacy Policy</Text> and <Text style={{color:"#0077FF"}}>Cookies Policy</Text></P>
+            <View style={{flex: 1, justifyContent:"center"}}>
+              <P style={{fontSize:14, fontWeight:"400", lineHeight: 20}}>
+                I agree to Zenlyf's <Text style={{color:"#0077FF"}}>Terms & Conditions</Text> and <Text style={{color:"#0077FF"}}>Privacy Policy</Text> and <Text style={{color:"#0077FF"}}>Cookies Policy</Text>
+              </P>
+            </View>
         </View>
         </View>
       </View>

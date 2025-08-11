@@ -35,7 +35,12 @@ const getstarted = () => {
                 <Text style={{color:"white", fontSize:18, fontWeight:"600"}}>Sign up</Text> 
         </TouchableOpacity>
         <View style={{display:"flex", flexDirection:"column", gap:24, marginTop:4}}>
-        <Text style={{fontSize:16, textAlign:"center"}}>Already have an account? <Text style={{color:"#0077FF"}}>Log in</Text></Text>
+        <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+          <Text style={{fontSize:16, textAlign:"center"}}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/signin')}>
+            <Text style={{color:"#0077FF", fontSize:16, fontWeight:"600"}}>Log in</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={{textAlign:"center"}}>OR</Text>
         <View style={{display:"flex", flexDirection:"column", gap:12}}>
         <TouchableOpacity style={{height:52, display:"flex", width:382,  justifyContent:"center", alignItems:"center", flexDirection:"row", gap:8,backgroundColor:"#E0F0FF99", borderRadius:8}}>

@@ -29,7 +29,7 @@ const AccountCreated = () => {
 
          <View style={{display:"flex", flexDirection: "columm", gap:16,width:"100%"}}>
             <TouchableOpacity 
-            onPress={() => router.push("/(auth)/signin")}
+            onPress={() => router.push("/onBoarding")}
             style={{backgroundColor:colors.primary, display:"flex", justifyContent:"center", alignItems:"center", width:"100%", borderRadius:10, height:52}}>
                 <Text style={{color:"#FFFFFF", fontSize:18, fontWeight:"700"}}>Go to Dashboard</Text>
             </TouchableOpacity>

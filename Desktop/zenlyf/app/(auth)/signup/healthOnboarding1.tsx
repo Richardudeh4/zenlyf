@@ -5,7 +5,6 @@ import GenderModal from '@/components/GenderModal';
 import H4 from '@/components/H4';
 import Input from '@/components/Input';
 import P from '@/components/P';
-import RadioButton from '@/components/RadioButton';
 import SelectInput from '@/components/SelectInput';
 import SpecializationModal from '@/components/SpecializationModal';
 import { colors } from '@/Config/colors';
@@ -412,15 +411,44 @@ const HealthOnboardingOne = () => {
                />
                <View style={{display:"flex", flexDirection:"column", gap:16}}>
                 <H4 style={{color:"#050505", }}>Select Role</H4>
+                <View style={{display:"flex", flexDirection:"row", gap: 20}}>
                  {userRole.map((option) => (
-                    <RadioButton
+                    <TouchableOpacity
                     key={option.value}
-                    selected={userOption === option.value}
                     onPress={() => setUserOption(option.value)}
-                    />
+                    style={{display:"flex", flexDirection:"row", alignItems:"center", gap: 8}}
+                    >
+                      <View style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 10,
+                        borderWidth: 2,
+                        borderColor: userOption === option.value ? "#0077FF" : "#A4A4A4",
+                        backgroundColor: userOption === option.value ? "#0077FF" : "white",
+                        justifyContent: "center",
+                        alignItems: "center"
+                      }}>
+                        {userOption === option.value && (
+                          <View style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: 4,
+                            backgroundColor: "white"
+                          }} />
+                        )}
+                      </View>
+                      <Text style={{
+                        fontSize: 16,
+                        color: "#050505",
+                        fontWeight: userOption === option.value ? "600" : "400"
+                      }}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
                 ))}
+                </View>
                </View>
-               <View style={{display:"flex", flexDirection:"column", gap:24}}>
+               <View style={{display:"flex", flexDirection:"column", gap:24, marginTop:36}}>
                 <View style={{width:"100%", height:0.5, backgroundColor:"#A4A4A4"}}/>
                 <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center"}}>
                   <Checkbox 
@@ -655,7 +683,7 @@ const HealthOnboardingOne = () => {
           {
              currentStep == 3 && (
                <>
-                 <View style={{display:"flex", flexDirection:'column', gap:16,}}>
+        <View style={{display:"flex", flexDirection:'column', gap:16,}}>
         <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
         <AppHeader
         goToScreen="/(auth)/signup"
@@ -810,7 +838,7 @@ const HealthOnboardingOne = () => {
                        // Handle submit for verification
                        console.log('Submit for verification pressed');
                        setHasCompletedSetup(true);
-                       router.push('/(tabs)');
+                       router.push('/(doctor-tabs)');
                      }}
                    >
                      <Text style={{
@@ -1155,12 +1183,14 @@ const HealthOnboardingOne = () => {
                          justifyContent: 'center',
                          alignItems: 'center',
                        }}>
-                         <Text style={{
-                           fontSize: 24,
-                           color: colors.primary,
-                         }}>
-                           🏔️
-                         </Text>
+                         <Image 
+                           source={require("../../../assets/images/upload.png")} 
+                           style={{
+                             width: 24,
+                             height: 24,
+                           }}
+                           resizeMode="cover"
+                         />
                        </View>
                      )}
                      <Text style={{
@@ -1213,12 +1243,14 @@ const HealthOnboardingOne = () => {
                          justifyContent: 'center',
                          alignItems: 'center',
                        }}>
-                         <Text style={{
-                           fontSize: 24,
-                           color: colors.primary,
-                         }}>
-                           🏔️
-                         </Text>
+                        <Image 
+                           source={require("../../../assets/images/upload.png")} 
+                           style={{
+                             width: 24,
+                             height: 24,
+                           }}
+                           resizeMode="cover"
+                         />
                        </View>
                      )}
                      <Text style={{
@@ -1326,7 +1358,7 @@ const HealthOnboardingOne = () => {
                        // Handle submit for manual review
                        console.log('Submit for Manual Review pressed');
                        setHasCompletedSetup(true);
-                       router.push('/(tabs)');
+                       router.push('/(auth)/signup/reviewingDocument');
                      }}
                  >
                    <Text style={{

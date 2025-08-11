@@ -11,6 +11,7 @@ export default function RootLayout() {
     <UserProvider>
       <SetupChecker>
         <Stack>
+    <Stack.Screen name="splash" options={{ headerShown: false }} />
     <Stack.Screen name="index" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/welcomescreen" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/screentwo" options={{ headerShown: false }} />
@@ -19,6 +20,7 @@ export default function RootLayout() {
     <Stack.Screen name="(auth)/signup/healthOnboarding1" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/signup/healthOnboarding2" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/signup/AccountCreated" options={{ headerShown: false }} />
+    <Stack.Screen name="(auth)/signup/reviewingDocument" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/WellnessSetup/index" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/WellnessSetup/trustedcontact" options={{ headerShown: false }}/>
     <Stack.Screen name="(auth)/WellnessSetup/accesscode" options={{ headerShown: false }}/>

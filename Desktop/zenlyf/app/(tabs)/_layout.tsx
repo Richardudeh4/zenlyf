@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
+import { Image } from 'react-native';
 import { colors } from '../../Config/colors';
 
 export default function TabLayout() {
@@ -29,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Image source={require('../../assets/images/homeActive.png')} alt="home" style={{width:24, height:24}} />
           ),
         }}
       />
@@ -38,7 +39,7 @@ export default function TabLayout() {
         options={{
           title: 'Meds',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart-outline" size={size} color={color} />
+            <Image source={require('../../assets/images/monitorInactive.png')} alt="home" style={{width:24, height:24}} />
           ),
         }}
       />
@@ -47,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Reports',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="warning-outline" size={size} color={color} />
+            <Image source={require('../../assets/images/chartInactive.png')} alt="home" style={{width:24, height:24}} />
           ),
         }}
       />
@@ -56,7 +57,7 @@ export default function TabLayout() {
         options={{
           title: 'Exercise',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Image source={require('../../assets/images/directionInactive.png')} alt="home" style={{width:24, height:24}} />
           ),
         }}
       />
@@ -65,7 +66,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+            <Image source={require('../../assets/images/personInactive.png')} alt="home" style={{width:24, height:24}} />
           ),
         }}
       />
