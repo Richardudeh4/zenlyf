@@ -4,14 +4,30 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import ShieldIcon from '../../../components/ShieldIcon';
 import { colors } from '../../../Config/colors';
 import { fonts } from '../../../Config/Fonts';
+import { useUser } from '../../../contexts/UserContext';
 
 const VerifiedUser = () => {
   const router = useRouter();
+  const { selectedRole } = useUser();
 
   const handleContinueToDashboard = useCallback(() => {
-    // Navigate to dashboard or main app screen
-    router.replace('/(tabs)');
-  }, [router]);
+    // Navigate to dashboard based on user role
+    switch (selectedRole) {
+      case 'myself':
+        router.replace('/(tabs)');
+        break;
+      case 'caregiver':
+        router.replace('/(caregiver-tabs)');
+        break;
+      case 'doctor':
+        router.replace('/(doctor-tabs)');
+        break;
+      default:
+        // Fallback to regular tabs if no role is selected
+        router.replace('/(tabs)');
+        break;
+    }
+  }, [router, selectedRole]);
 
   return (
     <SafeAreaView style={styles.container}>

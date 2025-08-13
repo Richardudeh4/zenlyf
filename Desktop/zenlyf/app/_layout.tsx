@@ -55,6 +55,13 @@ export default function RootLayout() {
       <Stack.Screen name="MainScreen/addRoutine" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/prescriptionAnalysis" options={{ headerShown: false }}/>
       <Stack.Screen name="(auth)/accountSetup" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/patientProfile" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/uploadReport" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/predictionMedication" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/prescriptionSuccess" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/checkinSchedule" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/checkinSuccess" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/chatScreen" options={{ headerShown: false }}/>
         </Stack>
       </SetupChecker>
     </UserProvider>

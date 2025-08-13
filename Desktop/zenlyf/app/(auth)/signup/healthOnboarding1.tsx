@@ -9,6 +9,7 @@ import SelectInput from '@/components/SelectInput';
 import SpecializationModal from '@/components/SpecializationModal';
 import { colors } from '@/Config/colors';
 import { fonts } from '@/Config/Fonts';
+import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -228,6 +229,7 @@ const HealthOnboardingOne = () => {
     const [facilityContact, setFacilityContact] = useState<string>("");
     const [hospitalIdImage, setHospitalIdImage] = useState<string | null>(null);
     const [referralLetterImage, setReferralLetterImage] = useState<string | null>(null);
+    const [uploadedDocuments, setUploadedDocuments] = useState<Array<{name: string, uri: string, type: string}>>([]);
     const router = useRouter();
         const { role } = useLocalSearchParams();
 
@@ -258,6 +260,28 @@ const HealthOnboardingOne = () => {
         } else if (type === 'referralLetter') {
           setReferralLetterImage(result.assets[0].uri);
         }
+      }
+    };
+
+    const pickDocument = async () => {
+      try {
+        const result = await DocumentPicker.getDocumentAsync({
+          type: '*/*', // Allow all file types
+          copyToCacheDirectory: true,
+        });
+
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+          const document = result.assets[0];
+          setUploadedDocuments(prev => [...prev, {
+            name: document.name || 'Document',
+            uri: document.uri,
+            type: document.mimeType || 'application/octet-stream'
+          }]);
+          Alert.alert('Success', 'Document uploaded successfully!');
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Failed to upload document. Please try again.');
+        console.error('Document picker error:', error);
       }
     };
 
@@ -1324,10 +1348,7 @@ const HealthOnboardingOne = () => {
                      alignItems: 'center',
                      gap: 8,
                    }}
-                   onPress={() => {
-                     // Handle upload action
-                     console.log('Upload pressed');
-                   }}
+                   onPress={pickDocument}
                  >
                    <Text style={{
                      fontSize: 18,
@@ -1344,6 +1365,60 @@ const HealthOnboardingOne = () => {
                      Upload
                    </Text>
                  </TouchableOpacity>
+                 
+                 {/* Display Uploaded Documents */}
+                 {uploadedDocuments.length > 0 && (
+                   <View style={{display:"flex", flexDirection:"column", gap:8}}>
+                     <Text style={{
+                       fontSize: 14,
+                       fontFamily: fonts.onestMedium,
+                       color: colors.black,
+                     }}>
+                       Uploaded Documents ({uploadedDocuments.length}):
+                     </Text>
+                     {uploadedDocuments.map((doc, index) => (
+                       <View key={index} style={{
+                         flexDirection: 'row',
+                         alignItems: 'center',
+                         backgroundColor: '#F5F5F5',
+                         padding: 12,
+                         borderRadius: 8,
+                         gap: 8,
+                       }}>
+                         <Text style={{
+                           fontSize: 12,
+                           color: colors.primary,
+                         }}>
+                           📄
+                         </Text>
+                         <Text style={{
+                           fontSize: 14,
+                           fontFamily: fonts.onestMedium,
+                           color: colors.black,
+                           flex: 1,
+                         }}>
+                           {doc.name}
+                         </Text>
+                         <TouchableOpacity
+                           onPress={() => {
+                             setUploadedDocuments(prev => prev.filter((_, i) => i !== index));
+                           }}
+                           style={{
+                             padding: 4,
+                           }}
+                         >
+                           <Text style={{
+                             fontSize: 16,
+                             color: colors.red,
+                             fontWeight: 'bold',
+                           }}>
+                             ×
+                           </Text>
+                         </TouchableOpacity>
+                       </View>
+                     ))}
+                   </View>
+                 )}
                  
                  {/* Submit Button */}
                  <TouchableOpacity

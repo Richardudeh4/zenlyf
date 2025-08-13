@@ -1,9 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 
+const {width, height} = Dimensions.get("window");
 const DoctorDashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Today');
 
@@ -13,8 +14,11 @@ const DoctorDashboard = () => {
         {/* Header with Profile */}
         <View style={styles.header}>
           <View style={styles.profileSection}>
-            <View style={styles.profileImage}>
-              <Text style={styles.profileInitial}>D</Text>
+            <View style={{position: "relative", width:60,height:62, borderRadius:"50%", backgroundColor: colors.primary}}>
+              <Image source={require("../../assets/images/avatar.png")} style={{width: "100%", height: "100%", borderRadius: "50%"}} />
+              <View style={{width:26, height:26, borderRadius:"50%",position:"absolute", bottom:0, right:0, display:"flex",justifyContent:"center", alignItems:"center",backgroundColor:"#EFF6FD"}}>
+              <MaterialIcons name="edit" size={16} color="#0077FF" />
+              </View>
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.greeting}>Hello Doctor Ezegbogu!</Text>
@@ -44,19 +48,19 @@ const DoctorDashboard = () => {
         <View style={styles.metricsContainer}>
           <View style={[styles.metricCard, { backgroundColor: colors.primary }]}>
             <Text style={styles.metricNumber}>12</Text>
-            <Text style={styles.metricLabel}>Patients Under Care</Text>
+            <Text style={styles.metricLabel}>Patients{"\n"} Under Care</Text>
           </View>
           <View style={[styles.metricCard, { backgroundColor:"#FF7C7C"}]}>
             <Text style={styles.metricNumber}>4</Text>
-            <Text style={styles.metricLabel}>Urgent Alerts Today</Text>
+            <Text style={styles.metricLabel}>Urgent {"\n"}  Alerts Today</Text>
           </View>
           <View style={[styles.metricCard, { backgroundColor:"#FFA500" }]}>
-            <Text style={styles.metricNumber}>26%</Text>
-            <Text style={styles.metricLabel}>Avg. Med Adherence</Text>
+            <Text style={styles.metricNumber}>26<Text style={{fontSize:12, fontWeight:"500", fontFamily: fonts.onestMedium, color: colors.white}}>%</Text></Text>
+            <Text style={styles.metricLabel}>Avg. Med {"\n"}  Adherence</Text>
           </View>
           <View style={[styles.metricCard, { backgroundColor:"#00C853"}]}>
             <Text style={styles.metricNumber}>85</Text>
-            <Text style={styles.metricLabel}>Avg. Vitals Score</Text>
+            <Text style={styles.metricLabel}>Avg. Vitals {"\n"}  Score</Text>
           </View>
         </View>
 
@@ -149,16 +153,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
   },
-  header: {
+header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 30,
+    width:"100%",
+  
   },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    display:"flex",
+    gap:8,
+    flex: 1,
   },
   profileImage: {
     width: 50,
@@ -186,6 +195,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flexShrink: 0,
   },
   notificationButton: {
     position: 'relative',
@@ -263,15 +273,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    display:"flex",
+    flexDirection:"row",
+    gap:6,
   },
   metricNumber: {
-    fontSize: 24,
+    fontSize: 48,
+    fontWeight:"500",
     fontFamily: fonts.onestBold,
     color: colors.white,
     marginBottom: 4,
   },
   metricLabel: {
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight:"500",
     fontFamily: fonts.onestMedium,
     color: colors.white,
     textAlign: 'center',
@@ -280,9 +295,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: fonts.onestBold,
-    color: colors.black,
+    color: "#050505",
+    fontWeight:"700",
     marginBottom: 16,
   },
   tabContainer: {

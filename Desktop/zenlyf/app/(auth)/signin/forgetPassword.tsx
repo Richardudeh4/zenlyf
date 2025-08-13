@@ -46,7 +46,7 @@ const ForgetPasswordScreen = () => {
           {/* Instructions */}
           <View style={styles.instructionsContainer}>
             <P style={styles.instructions}>
-              Enter the email associated with your Zenlyf account.
+              Enter the email associated with your{"\n"} Zenlyf account.
             </P>
           </View>
 
@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   instructions: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '400',
-    color: '#666666',
+    color: '#4D5766',
     lineHeight: 22,
   },
   inputContainer: {

@@ -1,12 +1,12 @@
 import React from "react";
 import {
-  Dimensions,
-  Modal,
-  PixelRatio,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+    Dimensions,
+    Modal,
+    PixelRatio,
+    StyleSheet,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { colors } from "../Config/colors";
@@ -30,28 +30,36 @@ const responsiveSize = (size: number) => {
   return size;
 };
 
-interface GenderModalProps {
+interface MedicationModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onSelect: (gender: string) => void;
-  selectedGender?: string;
+  onSelect: (medication: string) => void;
+  selectedMedication?: string;
 }
 
-const genderOptions = [
-  { id: 'male', label: 'Male' },
-  { id: 'female', label: 'Female' },
-  { id: 'other', label: 'Other' },
-  { id: 'prefer-not-to-say', label: 'Prefer not to say' },
+const medicationOptions = [
+  { id: 'aspirin', label: 'Aspirin' },
+  { id: 'ibuprofen', label: 'Ibuprofen' },
+  { id: 'acetaminophen', label: 'Acetaminophen' },
+  { id: 'lisinopril', label: 'Lisinopril' },
+  { id: 'metformin', label: 'Metformin' },
+  { id: 'atorvastatin', label: 'Atorvastatin' },
+  { id: 'amlodipine', label: 'Amlodipine' },
+  { id: 'omeprazole', label: 'Omeprazole' },
+  { id: 'losartan', label: 'Losartan' },
+  { id: 'carvedilol', label: 'Carvedilol' },
+  { id: 'furosemide', label: 'Furosemide' },
+  { id: 'warfarin', label: 'Warfarin' },
 ];
 
-export default function GenderModal({
+export default function MedicationModal({
   isVisible,
   onClose,
   onSelect,
-  selectedGender,
-}: GenderModalProps) {
-  const handleGenderSelect = (gender: string) => {
-    onSelect(gender);
+  selectedMedication,
+}: MedicationModalProps) {
+  const handleMedicationSelect = (medication: string) => {
+    onSelect(medication);
     onClose();
   };
 
@@ -68,7 +76,7 @@ export default function GenderModal({
           <TouchableWithoutFeedback>
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
-                <H4 style={styles.modalTitle}>Select Gender</H4>
+                <H4 style={styles.modalTitle}>Select Medication</H4>
                 <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                   <SvgXml
                     xml={
@@ -81,20 +89,20 @@ export default function GenderModal({
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.genderContainer}>
-                {genderOptions.map((option) => (
+              <View style={styles.medicationContainer}>
+                {medicationOptions.map((option) => (
                   <TouchableOpacity
                     key={option.id}
                     style={[
-                      styles.genderOption,
-                      selectedGender === option.id && styles.selectedGenderOption,
+                      styles.medicationOption,
+                      selectedMedication === option.id && styles.selectedMedicationOption,
                     ]}
-                    onPress={() => handleGenderSelect(option.id)}
+                    onPress={() => handleMedicationSelect(option.id)}
                   >
                     <P
                       style={[
-                        styles.genderOptionText,
-                        selectedGender === option.id && styles.selectedGenderOptionText,
+                        styles.medicationOptionText,
+                        selectedMedication === option.id && styles.selectedMedicationOptionText,
                       ]}
                     >
                       {option.label}
@@ -148,11 +156,11 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 5,
   },
-  genderContainer: {
+  medicationContainer: {
     marginBottom: responsiveSize(16),
     paddingHorizontal: responsiveSize(4),
   },
-  genderOption: {
+  medicationOption: {
     paddingVertical: responsiveSize(16),
     paddingHorizontal: responsiveSize(20),
     borderRadius: responsiveSize(12),
@@ -161,16 +169,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.gray1,
   },
-  selectedGenderOption: {
+  selectedMedicationOption: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
-  genderOptionText: {
+  medicationOptionText: {
     fontFamily: fonts.onestMedium,
     fontSize: responsiveSize(16),
     textAlign: "center",
   },
-  selectedGenderOptionText: {
+  selectedMedicationOptionText: {
     color: colors.white,
     fontFamily: fonts.onestBold,
   },
@@ -185,8 +193,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray1,
   },
 });
-
-
-
-
 
