@@ -1,46 +1,92 @@
-import { useRouter } from 'expo-router';
-import React from 'react'
-import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native'
+import { useRouter } from "expo-router";
+import React from "react";
+import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 
-const {height,width} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const Welcomescreen = () => {
-    const router = useRouter();
+  const router = useRouter();
   return (
-    <View style={{display:"flex", flex:1, backgroundColor:"white",justifyContent:"center", paddingHorizontal:24, position:"relative"}}>
-        <View style={{display:"flex", flexDirection:"column",gap:100, justifyContent:"center",alignItems:"center"}}>
+    <View
+      style={{
+        display: "flex",
+        flex: 1,
+        backgroundColor: "white",
+        justifyContent: "center",
+        paddingHorizontal: 24,
+        position: "relative",
+      }}
+    >
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 100,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Image source={require("../../assets/images/illustration1.png")} />
-        <View style={{display:"flex", flexDirection:"column", gap:18,alignItems:"center"}}>
-        <Text style={{fontSize:40, fontWeight:"600", color:"050505"}}>Welcome to <Text style={{color:"#0077FF"}}>Zenlyf</Text></Text>
-        <Text style={{color:"#050505", fontSize:18, fontWeight:"400",textAlign:"center"}}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 18,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 40, fontWeight: "600", color: "050505" }}>
+            Welcome to <Text style={{ color: "#0077FF" }}>Zenlyf</Text>
+          </Text>
+          <Text
+            style={{
+              color: "#050505",
+              fontSize: 18,
+              fontWeight: "400",
+              textAlign: "center",
+            }}
+          >
             Zenlyf is your smart health companion.{"\n"}
-            It watches for signs of danger, and helps {"\n"} alert the right people when you can’t.{"\n"}
-        </Text>
-            <Text style={{color:"#050505", fontSize:18, fontWeight:"400",textAlign:"center", marginTop:-10}}>
+            It watches for signs of danger, and helps {"\n"} alert the right
+            people when you can’t.{"\n"}
+          </Text>
+          <Text
+            style={{
+              color: "#050505",
+              fontSize: 18,
+              fontWeight: "400",
+              textAlign: "center",
+              marginTop: -10,
+            }}
+          >
             Feel safer every day with smart health{"\n"}
             alerts and check-ins.
-            </Text> 
+          </Text>
         </View>
-        </View>
-        <TouchableOpacity
+      </View>
+      <TouchableOpacity
         onPress={() => {
-           router.push("/(auth)/screentwo") 
+          router.push("/(auth)/screentwo");
         }}
         style={{
-            position:"absolute",
-            bottom: 0.11 * height,
-             display:"flex",
-             marginHorizontal:0.06 * width,
-             justifyContent:"center", 
-             alignItems:"center", 
-             borderRadius:11,
-             width:382, 
-             height:52, 
-             backgroundColor: "#0077FF"
-             }}>
-         <Text style={{color:"white", fontSize:18, fontWeight:"600"}}>Next</Text> 
-        </TouchableOpacity>
+          position: "absolute",
+          bottom: 0.11 * height,
+          display: "flex",
+          left: 0,
+          right: 0,
+          marginHorizontal: 14,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 11,
+          height: 52,
+          backgroundColor: "#0077FF",
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+          Next
+        </Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default Welcomescreen
+export default Welcomescreen;
