@@ -1,12 +1,48 @@
+import { svg } from '@/Config/Svg';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 
 const {width, height} = Dimensions.get("window");
 const DoctorDashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Today');
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState('Doctor');
+  const router = useRouter();
+  
+  // Floating logo animation
+  const floatingAnimation = React.useRef(new Animated.Value(0)).current;
+  const userOptions = [
+    { label: 'Doctor', value: 'Doctor' },
+    { label: 'User', value: 'User' },
+    { label: 'Caregiver', value: 'Caregiver' },
+  ];
+
+  // Start floating animation
+  React.useEffect(() => {
+    const startFloatingAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(floatingAnimation, {
+            toValue: -10,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(floatingAnimation, {
+            toValue: 0,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    startFloatingAnimation();
+  }, [floatingAnimation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,10 +73,44 @@ const DoctorDashboard = () => {
                 <Text style={styles.badgeText}>1</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dropdownButton}>
-              <Text style={styles.dropdownText}>Doctor</Text>
-              <Ionicons name="chevron-down" size={16} color={colors.black} />
-            </TouchableOpacity>
+            <View style={styles.dropdownWrapper}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => setShowUserDropdown(!showUserDropdown)}
+              >
+                <Text style={styles.dropdownText}>{selectedUser}</Text>
+                <Ionicons 
+                  name={showUserDropdown ? "chevron-up" : "chevron-down"} 
+                  size={16} 
+                  color={colors.black} 
+                />
+              </TouchableOpacity>
+              
+              {showUserDropdown && (
+                <View style={styles.dropdownContainer}>
+                  {userOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.dropdownOption,
+                        selectedUser === option.value && styles.selectedOption
+                      ]}
+                      onPress={() => {
+                        setSelectedUser(option.value);
+                        setShowUserDropdown(false);
+                      }}
+                    >
+                      <Text style={[
+                        styles.dropdownOptionText,
+                        selectedUser === option.value && styles.selectedOptionText
+                      ]}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
           </View>
         </View>
 
@@ -135,8 +205,27 @@ const DoctorDashboard = () => {
 
         {/* Floating Action Button */}
         <TouchableOpacity style={styles.fab}>
-          <Ionicons name="add" size={24} color={colors.white} />
+      <Ionicons name="add" size={24} color={colors.white} />
         </TouchableOpacity>
+        <Animated.View 
+          style={[
+            styles.floatingLogo,
+            {
+              transform: [{ translateY: floatingAnimation }],
+             
+            }
+          ]}
+          
+        >
+          <TouchableOpacity 
+          onPress={() => router.push("/MainScreen/zenlyfAi")}
+            style={{position:"relative"}}
+          >
+            <View style={{position:"absolute", top:-11, right:-6, width:10, height:10, borderWidth:2, borderColor:colors.white,borderRadius:"50%", backgroundColor:"#10C85F"}}/>
+            <SvgXml xml={svg.zenlyf}/>
+          </TouchableOpacity>
+        </Animated.View> 
+         
       </ScrollView>
     </SafeAreaView>
   );
@@ -251,6 +340,20 @@ header: {
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  floatingLogo: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    top: (78 * height) / 100,
+    left: (76 * width) / 100,
+    zIndex: 1000,
   },
   dropdownText: {
     fontSize: 14,
@@ -393,5 +496,43 @@ header: {
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+  },
+  dropdownWrapper: {
+    position: 'relative',
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 8,
+    minWidth: 120,
+    marginTop: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  dropdownOption: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  selectedOption: {
+    backgroundColor: colors.primary,
+  },
+  dropdownOptionText: {
+    fontSize: 14,
+    fontFamily: fonts.onestMedium,
+    color: colors.black,
+  },
+  selectedOptionText: {
+    color: colors.white,
   },
 });

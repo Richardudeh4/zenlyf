@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AppHeader from '../../components/AppHeader';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
-import { useRouter } from 'expo-router';
 
 const Meds = () => {
   const router = useRouter();
@@ -50,7 +50,9 @@ const Meds = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <AppHeader text="Prescription AI Insights" />
+      <View style={{paddingHorizontal: 24}}>
+        <AppHeader text="Prescription AI Insights" />
+      </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Medication Interaction Cards */}

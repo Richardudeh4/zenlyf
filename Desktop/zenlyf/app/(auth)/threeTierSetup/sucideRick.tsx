@@ -10,6 +10,7 @@ const SuicideRisk = () => {
     const [feltHomeless, setFeltHomeless] = useState<boolean>(true);
     const [thoughtsOfSelfHarm, setThoughtsOfSelfHarm] = useState<boolean>(true);
     const [haveSomeoneToTalkTo, setHaveSomeoneToTalkTo] = useState<boolean>(true);
+    const [loading, setLoading] = useState(false);
     
     const router = useRouter();
 
@@ -22,6 +23,11 @@ const SuicideRisk = () => {
         });
         // Navigate to next screen
         // router.push('/(auth)/threeTierSetup/nextScreen');
+        setTimeout(() => {
+            setLoading(false);
+            // Navigate to next screen
+            router.push("/(auth)/threeTierSetup");
+          }, 1000);
     };
 
     const handleViewSupportResources = () => {
@@ -40,7 +46,7 @@ const SuicideRisk = () => {
                     {/* Header */}
                     <View style={styles.headerSection}>
                         <AppHeader
-                            goToScreen="/(auth)/threeTierSetup/index"
+                            goToScreen="/(auth)/threeTierSetup"
                             showBackArrow
                         />
                         <View style={styles.titleSection}>
@@ -108,6 +114,7 @@ const SuicideRisk = () => {
 
                         {/* Save & Continue Button */}
                         <TouchableOpacity
+                            disabled={loading}
                             style={styles.saveButton}
                             onPress={handleSaveAndContinue}
                         >

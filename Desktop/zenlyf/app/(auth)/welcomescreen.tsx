@@ -9,14 +9,14 @@ const Welcomescreen = () => {
     <View style={{display:"flex", flex:1, backgroundColor:"white",justifyContent:"center", paddingHorizontal:24, position:"relative"}}>
         <View style={{display:"flex", flexDirection:"column",gap:100, justifyContent:"center",alignItems:"center"}}>
         <Image source={require("../../assets/images/illustration1.png")} />
-        <View style={{display:"flex", flexDirection:"column", gap:24,alignItems:"center"}}>
+        <View style={{display:"flex", flexDirection:"column", gap:18,alignItems:"center"}}>
         <Text style={{fontSize:40, fontWeight:"600", color:"050505"}}>Welcome to <Text style={{color:"#0077FF"}}>Zenlyf</Text></Text>
-        <Text style={{color:"888888", fontSize:19, fontWeight:"300",textAlign:"center"}}>
-            Zenlyf is your smart health companion.
-            It watches for signs of danger, and helps alert the right people when you can’t.
-                </Text>
-            <Text style={{ color:"888888", fontSize:19, fontWeight:"300",textAlign:"center"}}>
-            Feel safer every day with smart health
+        <Text style={{color:"#050505", fontSize:18, fontWeight:"400",textAlign:"center"}}>
+            Zenlyf is your smart health companion.{"\n"}
+            It watches for signs of danger, and helps {"\n"} alert the right people when you can’t.{"\n"}
+        </Text>
+            <Text style={{color:"#050505", fontSize:18, fontWeight:"400",textAlign:"center", marginTop:-10}}>
+            Feel safer every day with smart health{"\n"}
             alerts and check-ins.
             </Text> 
         </View>

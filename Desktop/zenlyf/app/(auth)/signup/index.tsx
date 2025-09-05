@@ -24,7 +24,9 @@ const index = () => {
              goToScreen='/(auth)/getstarted'
             />
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={() => router.push(`/(auth)/signin`)}
+            >
       <Text style={{color:"#0077FF",fontWeight:"600", fontSize:14, textDecorationLine:"underline"}}>Log in</Text>
             </TouchableOpacity>
         </View>
@@ -38,7 +40,6 @@ const index = () => {
         </View>
         <View style={{display:"flex", flexDirection:"column", gap:24}}>
         <Button
-         
         onPress={() => router.push(`/(auth)/signup/healthOnboarding1?role=${role}`) }
         btnText='Get Started'
         />

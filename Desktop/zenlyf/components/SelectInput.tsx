@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import {
+  Dimensions,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
-  Text,
-  Dimensions,
-  ViewStyle,
-  ScrollView,
+  ViewStyle
 } from "react-native";
+import { SvgXml } from "react-native-svg";
 import { colors } from "../Config/colors";
 import { fonts } from "../Config/Fonts";
-import P from "./P";
-import { SvgXml } from "react-native-svg";
 import { svg } from "../Config/Svg";
+import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
+import P from "./P";
 import SelectableTag from "./SelectableTag";
 import SingleSelectBottomSheet from "./SingleSelectBottomSheet";
-import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
 
 const { width, height } = Dimensions.get("window");
 
@@ -128,7 +127,7 @@ export default function SelectInput({
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           onSelect={handleMultiSelect}
-          title={label}
+          title={placeholder}
           options={options}
           selectedValues={selectedValues}
           maxSelections={maxSelections}
@@ -164,13 +163,13 @@ const styles = StyleSheet.create({
     
     minHeight: 56,
     borderWidth: 1,
-    borderColor: colors.stroke,
+    borderColor: colors.black,
     borderRadius: 12,
     paddingHorizontal: 16,
     backgroundColor: colors.white,
   },
   inputError: {
-    borderColor: colors.error || "red",
+    borderColor: colors.error || "black",
   },
   inputDisabled: {
     backgroundColor: '#F5F5F5',

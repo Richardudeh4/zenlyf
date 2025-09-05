@@ -49,7 +49,7 @@ const AddRoutine = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <AppHeader text="Generate Routine" />
+      <AppHeader text="Generate Routine" contStyle={{paddingLeft:24}}/>
 
       <View style={styles.content}>
         {/* Input Sections */}

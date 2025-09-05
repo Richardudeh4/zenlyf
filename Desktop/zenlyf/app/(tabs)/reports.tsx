@@ -62,7 +62,9 @@ const Reports = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
+      <View style={{paddingHorizontal: 24}}>
       <AppHeader text="My Medical Reports" />
+      </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Medical Reports List */}

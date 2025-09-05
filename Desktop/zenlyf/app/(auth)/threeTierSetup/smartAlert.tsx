@@ -43,7 +43,7 @@ const SmartAlert = () => {
                     {/* Header */}
                     <View style={styles.headerSection}>
                         <AppHeader
-                            goToScreen="/(auth)/threeTierSetup/index"
+                            goToScreen="/(auth)/threeTierSetup"
                             showBackArrow
                         />
                         <View style={styles.titleSection}>

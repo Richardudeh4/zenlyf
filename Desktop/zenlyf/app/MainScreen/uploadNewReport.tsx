@@ -96,7 +96,7 @@ const UploadNewReport = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <AppHeader text="Upload New Report" />
+      <AppHeader text="Upload New Report" contStyle={{paddingLeft:24}} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Primary Upload Area */}

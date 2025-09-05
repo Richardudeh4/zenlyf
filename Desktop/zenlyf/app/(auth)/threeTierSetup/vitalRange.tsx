@@ -11,6 +11,7 @@ const VitalRange = () => {
     const [heartRateMax, setHeartRateMax] = useState<string>('100');
     const [bloodPressureMin, setBloodPressureMin] = useState<string>('90');
     const [systolic, setSystolic] = useState<string>('120');
+    const [loading, setLoading] = useState(false);
     const [diastolic, setDiastolic] = useState<string>('60');
     const [oxygenSaturationMin, setOxygenSaturationMin] = useState<string>('');
     const [oxygenSaturationMax, setOxygenSaturationMax] = useState<string>('95');
@@ -27,8 +28,11 @@ const VitalRange = () => {
             oxygenSaturation: { min: oxygenSaturationMin, max: oxygenSaturationMax },
             bloodGlucose: { min: bloodGlucoseMin, max: bloodGlucoseMax }
         });
-        // Navigate to next screen
-        // router.push('/(auth)/threeTierSetup/nextScreen');
+        setTimeout(() => {
+            setLoading(false);
+            // Navigate to next screen
+            router.push("/(auth)/threeTierSetup");
+          }, 1000);
     };
 
     return (
@@ -41,7 +45,7 @@ const VitalRange = () => {
                     {/* Header */}
                     <View style={styles.headerSection}>
                         <AppHeader
-                            goToScreen="/(auth)/threeTierSetup/index"
+                            goToScreen="/(auth)/threeTierSetup"
                             showBackArrow
                         />
                         <View style={styles.titleSection}>
@@ -191,6 +195,7 @@ const VitalRange = () => {
 
                         {/* Save Button */}
                         <TouchableOpacity
+                            disabled={loading}
                             style={styles.saveButton}
                             onPress={handleSaveAndContinue}
                         >

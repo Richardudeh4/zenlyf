@@ -62,7 +62,7 @@ const PrescriptionAnalysis = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <AppHeader text="Prescription Analysis" />
+      <AppHeader text="Prescription Analysis" contStyle={{paddingLeft:24}} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Upload Prescription Section */}

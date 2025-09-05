@@ -13,6 +13,7 @@ const InsuranceAndHospital = () => {
     const [insuranceId, setInsuranceId] = useState<string>("");
     const [preferredHospital, setPreferredHospital] = useState<string>("");
     const [hospitalPhone, setHospitalPhone] = useState<string>("");
+    const [loading, setLoading] = useState(false);
     
     const router = useRouter();
 
@@ -25,6 +26,11 @@ const InsuranceAndHospital = () => {
             preferredHospital,
             hospitalPhone
         });
+        setTimeout(() => {
+            setLoading(false);
+            // Navigate to next screen
+            router.push("/(auth)/threeTierSetup");
+          }, 1000);
         // Navigate to next screen
         // router.push('/(auth)/threeTierSetup/nextScreen');
     };
@@ -39,7 +45,7 @@ const InsuranceAndHospital = () => {
                     {/* Header */}
                     <View style={styles.headerSection}>
                         <AppHeader
-                            goToScreen="/(auth)/threeTierSetup/index"
+                            goToScreen="/(auth)/threeTierSetup"
                             showBackArrow
                         />
                         <View style={styles.titleSection}>
@@ -127,6 +133,7 @@ const InsuranceAndHospital = () => {
 
                         {/* Save Button */}
                         <TouchableOpacity
+                            disabled={loading}
                             style={styles.saveButton}
                             onPress={handleSave}
                         >

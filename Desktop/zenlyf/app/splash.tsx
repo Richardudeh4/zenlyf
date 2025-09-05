@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../Config/colors';
 import { fonts } from '../Config/Fonts';
 
@@ -21,11 +21,8 @@ const SplashScreen = () => {
     <View style={styles.container}>
       {/* Meditative Figure Icon */}
       <View style={styles.iconContainer}>
-        {/* Head */}
-        <View style={styles.head} />
-        
-        {/* Body - flowing meditative pose */}
-       
+        <Image source={require("../assets/images/zenlyf.png")} style={{}} alt="zenlyf" />
+      
        
       </View>
     </View>

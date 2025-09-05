@@ -5,7 +5,7 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity
 import AppHeader from '../../components/AppHeader';
 import Button from '../../components/Button';
 import DatePickerModal from '../../components/DatePickerModal';
-import MedicationModal from '../../components/MedicationModal';
+import SingleSelectBottomSheet from '../../components/SingleSelectBottomSheet';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 
@@ -60,23 +60,23 @@ const PredictionMedication = () => {
     });
   };
 
+  const medicationOptions = [
+    { label: 'Aspirin', value: 'aspirin' },
+    { label: 'Ibuprofen', value: 'ibuprofen' },
+    { label: 'Acetaminophen', value: 'acetaminophen' },
+    { label: 'Lisinopril', value: 'lisinopril' },
+    { label: 'Metformin', value: 'metformin' },
+    { label: 'Atorvastatin', value: 'atorvastatin' },
+    { label: 'Amlodipine', value: 'amlodipine' },
+    { label: 'Omeprazole', value: 'omeprazole' },
+    { label: 'Losartan', value: 'losartan' },
+    { label: 'Carvedilol', value: 'carvedilol' },
+    { label: 'Furosemide', value: 'furosemide' },
+    { label: 'Warfarin', value: 'warfarin' },
+  ];
+
   const getMedicationLabel = (medicationId: string) => {
-    const medicationOptions = [
-      { id: 'aspirin', label: 'Aspirin' },
-      { id: 'ibuprofen', label: 'Ibuprofen' },
-      { id: 'acetaminophen', label: 'Acetaminophen' },
-      { id: 'lisinopril', label: 'Lisinopril' },
-      { id: 'metformin', label: 'Metformin' },
-      { id: 'atorvastatin', label: 'Atorvastatin' },
-      { id: 'amlodipine', label: 'Amlodipine' },
-      { id: 'omeprazole', label: 'Omeprazole' },
-      { id: 'losartan', label: 'Losartan' },
-      { id: 'carvedilol', label: 'Carvedilol' },
-      { id: 'furosemide', label: 'Furosemide' },
-      { id: 'warfarin', label: 'Warfarin' },
-    ];
-    
-    const medication = medicationOptions.find(option => option.id === medicationId);
+    const medication = medicationOptions.find(option => option.value === medicationId);
     return medication ? medication.label : medicationId;
   };
 
@@ -169,11 +169,14 @@ const PredictionMedication = () => {
       />
 
       {/* Medication Modal */}
-      <MedicationModal
+      <SingleSelectBottomSheet
         isVisible={showMedicationModal}
         onClose={() => setShowMedicationModal(false)}
         onSelect={handleMedicationSelect}
-        selectedMedication={medicationName}
+        title="Select Medication"
+        options={medicationOptions}
+        selectedValue={medicationName}
+        searchPlaceholder="Search medications"
       />
     </SafeAreaView>
   );

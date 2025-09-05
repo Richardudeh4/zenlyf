@@ -20,6 +20,7 @@ const FamilyHistory = () => {
         { id: '4', name: 'Heart Disease', selected: true },
         { id: '5', name: 'Alzheimers', selected: true },
     ]);
+    const [loading, setLoading] = useState(false);
     
     const router = useRouter();
 
@@ -43,8 +44,11 @@ const FamilyHistory = () => {
         // Handle form submission here
         const selectedConditions = medicalConditions.filter(condition => condition.selected);
         console.log('Family Medical History:', selectedConditions);
-        // Navigate to dashboard or next screen
-        router.push('/'); // Navigate to main dashboard
+        setTimeout(() => {
+            setLoading(false);
+            // Navigate to next screen
+            router.push("/(auth)/threeTierSetup");
+          }, 1000); // Navigate to main dashboard
     };
 
     return (
@@ -57,7 +61,7 @@ const FamilyHistory = () => {
                     {/* Header */}
                     <View style={styles.headerSection}>
                         <AppHeader
-                            goToScreen="/(auth)/threeTierSetup/index"
+                            goToScreen="/(auth)/threeTierSetup"
                             showBackArrow
                         />
                         <View style={styles.titleSection}>

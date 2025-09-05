@@ -62,6 +62,11 @@ export default function RootLayout() {
       <Stack.Screen name="MainScreen/checkinSchedule" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/checkinSuccess" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/chatScreen" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/setAvailibility" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/notificationPreferences" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/legalAndPolicy" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/logout" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/zenlyfAi" options={{ headerShown: false }}/>
         </Stack>
       </SetupChecker>
     </UserProvider>

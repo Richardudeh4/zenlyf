@@ -171,7 +171,7 @@ const Calendar: React.FC<CalendarProps> = ({
 
 const styles = StyleSheet.create({
   calendarContainer: {
-    backgroundColor: colors.white,
+    backgroundColor: "#EFF6FD",
     borderRadius: 12,
     padding: 20,
     shadowColor: colors.black,

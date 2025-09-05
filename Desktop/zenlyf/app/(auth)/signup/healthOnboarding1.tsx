@@ -352,6 +352,7 @@ const HealthOnboardingOne = () => {
           placeholder="YYYY-MM-DD"
           value=''
           onSelect={() => {}}
+          contStyle={{borderColor:"black"}}
         />
         <Input 
         defaultCountryCode={countryCode}
@@ -385,6 +386,7 @@ const HealthOnboardingOne = () => {
                multiSelect={false}
                selectedValues={[]}
                onSelect={() => {}}
+               contStyle={{borderColor:"black"}}
                />
             <Input 
             contStyle={{}}
@@ -397,6 +399,7 @@ const HealthOnboardingOne = () => {
                multiSelect={false}
                selectedValues={[]}
                onSelect={() => {}}
+               contStyle={{borderColor:"black"}}
                />
             <SelectInput
                placeholder="Religion"

@@ -5,16 +5,20 @@ import { colors } from '../../Config/colors';
 export default function CaregiverTabLayout() {
   return (
     <Tabs
-      screenOptions={{
+    screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.gray1,
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
-          backgroundColor: colors.white,
-          borderTopWidth: 1,
-          borderTopColor: colors.gray1,
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
+          backgroundColor: '#FFFFFF',
+        
+          height: 88,
+          paddingBottom: 20,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+          marginTop: 4,
         },
         headerShown: false,
       }}
@@ -29,11 +33,20 @@ export default function CaregiverTabLayout() {
         }}
       />
       <Tabs.Screen
-        name="clients"
+        name="patients"
         options={{
-          title: 'Clients',
+          title: 'Patients',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inbox"
+        options={{
+          title: 'Inbox',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
           ),
         }}
       />
@@ -42,23 +55,14 @@ export default function CaregiverTabLayout() {
         options={{
           title: 'Schedule',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
+            <Ionicons name="document-text" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="tasks"
+        name="setting"
         options={{
-          title: 'Tasks',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="checkmark-circle" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),

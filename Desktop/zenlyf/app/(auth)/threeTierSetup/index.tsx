@@ -23,7 +23,7 @@ const index = () => {
             <View style={{display:"flex", flexDirection:"column", gap:16,paddingHorizontal:24}}>
                  <View style={{display:"flex", flexDirection:'column', gap:16,}}>
                         <AppHeader
-                        goToScreen="/(auth)/signup/healthOnboarding1"
+                        goToScreen="/(auth)/WellnessSetup"
                         showBackArrow
                         />
                         <View style={{display:"flex", flexDirection:"column", gap:14}}>
@@ -69,7 +69,7 @@ const index = () => {
                   <TouchableOpacity 
                   onPress={() => router.push("/(auth)/threeTierSetup/smartAlert")}
                   style={{paddingHorizontal:10, paddingVertical:15, display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center", borderWidth:1, borderColor:"#A4A4A4", borderRadius:8}}>
-                            <P style={{fontFamily: "onest-thin", fontSize:18, fontWeight:"500"}}>Smart Alert Config (e.g, heart rate, no movement)</P>
+                            <P style={{fontFamily: "onest-thin", fontSize:18, fontWeight:"500"}}>Smart Alert Config(e.g, heart rate)</P>
                             <Entypo name="chevron-right" size={24} color="black" />
                 </TouchableOpacity>
                   <TouchableOpacity
@@ -81,7 +81,7 @@ const index = () => {
               </View>
                 <View style={{marginTop:96, width:"100%"}}>
                   <TouchableOpacity 
-                  onPress={() => router.push("/(auth)/WellnessSetup/trustedcontact")}
+                  onPress={() => router.push("/(auth)/signin")}
                   style={{backgroundColor: "#0077FF", borderRadius:10, width:"auto", height:52, display:"flex", justifyContent:"center", alignItems:"center"}}>
                     <P style={{color:"#ffff",fontSize:18, fontWeight:"700"}}>Get Started</P>
                   </TouchableOpacity>

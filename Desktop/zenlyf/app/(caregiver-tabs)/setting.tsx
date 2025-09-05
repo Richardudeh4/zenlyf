@@ -71,7 +71,9 @@ const Profile = () => {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.headerTop}>
-            
+            <TouchableOpacity style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color={colors.black} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuButton} onPress={handleMenuPress}>
               <Ionicons name="ellipsis-vertical" size={24} color={colors.black} />
             </TouchableOpacity>
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
   },
   headerTop: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },

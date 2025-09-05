@@ -1,14 +1,30 @@
-import { Ionicons } from '@expo/vector-icons';
+import { svg } from '@/Config/Svg';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
+import P from '@/components/P';
 
+
+const { height, width } = Dimensions.get("window");
 export default function HomeScreen() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState(14);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState('User');
   const router = useRouter();
+  
+  // Floating logo animation
+  const floatingAnimation = React.useRef(new Animated.Value(0)).current;
+
+  const userOptions = [
+    { label: 'Caregiver', value: 'Caregiver' },
+    { label: 'User', value: 'User' },
+  ];
 
   const moods = [
     { id: 1, emoji: '😐', label: 'Neutral' },
@@ -17,6 +33,28 @@ export default function HomeScreen() {
   ];
 
   const calendarDays = Array.from({ length: 18 }, (_, i) => i + 1);
+
+  // Start floating animation
+  React.useEffect(() => {
+    const startFloatingAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(floatingAnimation, {
+            toValue: -10,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(floatingAnimation, {
+            toValue: 0,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    startFloatingAnimation();
+  }, [floatingAnimation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,10 +74,44 @@ export default function HomeScreen() {
             </View>
           </View>
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.userButton}>
-              <Text style={styles.userButtonText}>User</Text>
-              <Ionicons name="chevron-down" size={16} color={colors.black} />
-            </TouchableOpacity>
+            <View style={styles.dropdownWrapper}>
+              <TouchableOpacity 
+                style={styles.userButton}
+                onPress={() => setShowUserDropdown(!showUserDropdown)}
+              >
+                <Text style={styles.userButtonText}>{selectedUser}</Text>
+                <Ionicons 
+                  name={showUserDropdown ? "chevron-up" : "chevron-down"} 
+                  size={16} 
+                  color={colors.black} 
+                />
+              </TouchableOpacity>
+              
+              {showUserDropdown && (
+                <View style={styles.dropdownContainer}>
+                  {userOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.dropdownOption,
+                        selectedUser === option.value && styles.selectedOption
+                      ]}
+                      onPress={() => {
+                        setSelectedUser(option.value);
+                        setShowUserDropdown(false);
+                      }}
+                    >
+                      <Text style={[
+                        styles.dropdownOptionText,
+                        selectedUser === option.value && styles.selectedOptionText
+                      ]}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
           </View>
         </View>
 
@@ -169,9 +241,27 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
-
+       
+          <Animated.View 
+          style={[
+            styles.floatingLogo,
+            {
+              transform: [{ translateY: floatingAnimation }]
+            }
+          ]}
+        >
+          <TouchableOpacity 
+            style={{position:"relative"}}
+            onPress={() => router.push("/MainScreen/zenlyfAi")}
+          >
+            <View style={{position:"absolute", top:-11, right:-6, width:10, height:10, borderWidth:2, borderColor:colors.white,borderRadius:"50%", backgroundColor:"#10C85F"}}/>
+            <SvgXml xml={svg.zenlyf}/>
+          </TouchableOpacity>
+        </Animated.View> 
+         
+       
         {/* Prescription Insight */}
-        <View style={styles.prescriptionSection}>
+        <TouchableOpacity style={styles.prescriptionSection}>
           <View style={styles.prescriptionCard}>
             <View style={styles.prescriptionHeader}>
               <Ionicons name="document-text-outline" size={20} color={colors.primary} />
@@ -188,10 +278,10 @@ export default function HomeScreen() {
               <Text style={styles.analysisButtonText}>View Full Analysis</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Streaks & Rewards */}
-        <View style={styles.rewardsSection}>
+        <TouchableOpacity style={styles.rewardsSection}>
           <View style={styles.rewardsCard}>
             <View style={styles.rewardsHeader}>
               <Ionicons name="flame" size={20} color="#FF9800" />
@@ -202,8 +292,95 @@ export default function HomeScreen() {
               <Text style={styles.rewardsButtonText}>View Rewards</Text>
             </TouchableOpacity>
           </View>
+        </TouchableOpacity>
+
+        <View style={{padding:10, borderRadius:20, backgroundColor:"#EFF6FD", marginHorizontal:24, marginBottom:20}}>
+            <TouchableOpacity style={{display:"flex", flexDirection:"row", gap:24, alignItems:"center", width:"100%", paddingVertical:20}}>
+              <View style={{width:60, height:60, borderRadius:16, backgroundColor:"#B3DAFF", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                <SvgXml xml={svg.suggest}/>
+              </View>
+              <View style={{display:"flex",  flexDirection:"row", gap:16, alignItems:"center",borderBottomWidth:1, borderBottomColor:"#050505", paddingBottom:20}}>
+                <View style={{display:"flex", flexDirection:"column", gap:4}}>
+                  <Text style={{color:"#050505", fontSize:20, fontWeight:"700"}}>Need help?</Text>
+                  <Text style={{color:"#050505",fontSize:14, fontWeight:"400" }}>Let us know how we may help you</Text>
+                </View>
+                <Entypo name="chevron-thin-right" size={20} color="#050505" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress= {() => setShowFeedbackModal(true)}
+             style={{display:"flex", flexDirection:"row", gap:24, alignItems:"center", width:"100%", paddingVertical:20}}>
+              <View style={{width:60, height:60, borderRadius:16, backgroundColor:"#B3DAFF", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                <SvgXml xml={svg.feedBack}/>
+              </View>
+              <View style={{display:"flex",  flexDirection:"row", gap:16, alignItems:"center"}}>
+                <View style={{display:"flex", flexDirection:"column", gap:4}}>
+                  <Text style={{color:"#050505", fontSize:20, fontWeight:"700"}}>Have any feedbacks?</Text>
+                  <Text style={{color:"#050505",fontSize:14, fontWeight:"400" }}>Help shape the future of Zenlyf</Text>
+                </View>
+                <Entypo name="chevron-thin-right" size={20} color="#050505" />
+              </View>
+            </TouchableOpacity>
+
+        <Modal
+        visible={showFeedbackModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowFeedbackModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowFeedbackModal(false)}
+        >
+          <View style={styles.attachmentModal}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}></Text>
+              <TouchableOpacity onPress={() => setShowFeedbackModal(false)}>
+                <Ionicons name="close" size={24} color={colors.black} />
+              </TouchableOpacity>
+            </View>
+            <View style={{display:"flex", flexDirection:"column", gap:60}}>
+            <View style={{display:"flex", flexDirection:"column", gap:24}}>
+            <View style={{display:"flex", flexDirection:"column", gap:8, borderBottomWidth:1,borderBottomColor:"#888888", paddingBottom:20}}>
+            <P style={{fontSize:24, fontWeight:"700",lineHeight:28}}>Your Feedback Matters</P>
+            <Text style={{fontSize:18, fontWeight:"300",color:"#050505"}}>It takes less than 60 seconds to complete</Text>
+            </View> 
+            <View style={{display:"flex", flexDirection:"column", gap:8,  paddingBottom:20}}>
+            <P style={{fontSize:20, fontWeight:"700",lineHeight:28}}>How is your overall experience?</P>
+            <View style={{display:"flex", flexDirection:"row", gap:7, alignItems:"center"}}>
+            <Entypo name="star" size={24} color="#FDD836"/>
+            <Entypo name="star" size={24} color="#FDD836"/>
+            <Entypo name="star" size={24} color="#FDD836"/>
+            <Entypo name="star" size={24} color="#FDD836"/>
+            <Entypo name="star" size={24} color="#FDD836"/>
+            </View>
+            </View>
+            <View style={{display:"flex", flexDirection:"column", gap:8,  paddingBottom:20}}>
+            <P style={{fontSize:20, fontWeight:"700",lineHeight:28}}>What could have been done better?</P>
+           <TextInput
+             multiline={true}
+             numberOfLines={4} 
+            placeholder='Share your thoughts with us here' style={{borderWidth:1,backgroundColor:"#F6F6F6", borderColor:"#F6F6F6", height:186, borderRadius:6, padding:12}}/>
+            </View>
+           
+            </View>
+            <View style={{display:"flex", flexDirection:"column", gap:12,}}>
+            <TouchableOpacity style={{backgroundColor:"#0077FF",height:52, borderRadius:10, display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+            <Text style={{color:colors.white, fontSize:18, fontWeight:"700",lineHeight:24}}>Submit feedback</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor:"white",height:52, borderRadius:10, display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+            <Text style={{color:"#050505", fontSize:18, fontWeight:"700",lineHeight:24}}>Cancel</Text>
+            </TouchableOpacity>
+            </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
         </View>
       </ScrollView>
+
+
     </SafeAreaView>
   );
 }
@@ -212,12 +389,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+    position:"relative",
   },
   scrollView: {
     flex: 1,
+    position:"relative",
   },
   header: {
-    
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -464,6 +642,39 @@ const styles = StyleSheet.create({
   calendarNavigation: {
     flexDirection: 'row',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  attachmentModal: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: fonts.onestBold,
+    color: colors.black,
+  },
+  attachmentOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  attachmentOption: {
+    alignItems: 'center',
+    flex: 1,
+  },
   navButton: {
     width: 32,
     height: 32,
@@ -620,5 +831,57 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: fonts.onestMedium,
     color: colors.white,
+  },
+  dropdownWrapper: {
+    position: 'relative',
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 8,
+    minWidth: 120,
+    marginTop: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  dropdownOption: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  selectedOption: {
+    backgroundColor: colors.primary,
+  },
+  dropdownOptionText: {
+    fontSize: 14,
+    fontFamily: fonts.onestMedium,
+    color: colors.black,
+  },
+  selectedOptionText: {
+    color: colors.white,
+  },
+  floatingLogo: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    top: (78 * height) / 100,
+    left: (86 * width) / 100,
+    zIndex: 1000,
   },
 });

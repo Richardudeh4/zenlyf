@@ -51,8 +51,10 @@ const TodayOverview = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
+      <View style={{paddingHorizontal: 24}}>
       <AppHeader text="Today's Overview" />
-
+      </View>
+      
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.cardsContainer}>
