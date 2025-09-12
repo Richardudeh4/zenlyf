@@ -73,6 +73,12 @@ const CaregiverDashboard = () => {
 
   const handleAlertButtonPress = (alertType: string) => {
     console.log(`${alertType} alert pressed`);
+    router.push({
+      pathname: '/(caregiver-tabs)/schedule',
+      params: {
+        alertType: alertType
+      }
+    });
   };
 
   const handleFABPress = () => {
@@ -179,19 +185,17 @@ const CaregiverDashboard = () => {
               onPress={() => handleAlertButtonPress('Falls')}
             >
               <Text style={styles.alertButtonText}>Falls</Text>
-              <View style={[styles.alertBadge, {backgroundColor:"#004DA4"}]}>
+             
                 <Text style={styles.alertBadgeText}>1</Text>
-              </View>
+            
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={[styles.alertButton, styles.missedMedsButton, {borderBottomColor:"#7B0000"}]} 
+              style={[styles.alertButton, styles.missedMedsButton]} 
               onPress={() => handleAlertButtonPress('Missed Meds')}
             >
-              <Text style={styles.alertButtonText}>Missed {"\n"} Meds</Text>
-              <View style={[styles.alertBadge, {backgroundColor:"#FD4242"}]}>
-                <Text style={styles.alertBadgeText}>6</Text>
-              </View>
+              <Text style={styles.alertButtonText}>Missed Meds</Text>
+                <Text style={styles.alertBadgeText}>6</Text> 
             </TouchableOpacity>
             
             <TouchableOpacity 
@@ -199,9 +203,7 @@ const CaregiverDashboard = () => {
               onPress={() => handleAlertButtonPress('Inactivity')}
             >
               <Text style={styles.alertButtonText}>Inactivity</Text>
-              <View style={[styles.alertBadge, {backgroundColor:"#9E6600"}]}>
                 <Text style={styles.alertBadgeText}>7</Text>
-              </View>
             </TouchableOpacity>
             
             <TouchableOpacity 
@@ -209,9 +211,9 @@ const CaregiverDashboard = () => {
               onPress={() => handleAlertButtonPress('Wandering')}
             >
               <Text style={styles.alertButtonText}>Wandering</Text>
-              <View style={[styles.alertBadge, {backgroundColor:"#007BA8"}]}>
+              
                 <Text style={styles.alertBadgeText}>2</Text>
-              </View>
+              
             </TouchableOpacity>
           </View>
         </View>
@@ -513,37 +515,39 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   alertsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+    flexDirection: "column",
+    display:"flex",
+    gap: 15,
   },
   alertButton: {
     flex: 1,
     minWidth: '45%',
     height: 80,
     borderRadius: 20,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     position: 'relative',
-    borderBottomWidth:4,
-    borderBottomColor:"#03448F",
+    display:"flex",
+    flexDirection:"row",
+    paddingHorizontal:12,
+    borderBottomColor:"#3333331A",
   },
   fallsButton: {
-    backgroundColor: "#0077FF",
+    backgroundColor: "#0077FF1A",
   },
   missedMedsButton: {
-    backgroundColor: "#FF7C7C",
+    backgroundColor: "#FF3B3B1A",
   },
   inactivityButton: {
-    backgroundColor: "#FFA500",
+    backgroundColor: "#FFA5001A",
   },
   wanderingButton: {
-    backgroundColor: "#00BBFF",
+    backgroundColor: "#00C8531A",
   },
   alertButtonText: {
-    fontSize: 20,
+    fontSize: 14,
     fontFamily: fonts.onestBold,
-    color: "#FFFFFF",
+    color: "#0A0A0A",
     fontStyle:"italic",
     fontWeight:"500",
   },
@@ -561,9 +565,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   alertBadgeText: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: fonts.onestBold,
     color: colors.black,
+    fontWeight:"500",
   },
   tasksContainer: {
     gap: 4,

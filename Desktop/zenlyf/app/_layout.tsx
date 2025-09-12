@@ -67,6 +67,11 @@ export default function RootLayout() {
       <Stack.Screen name="MainScreen/legalAndPolicy" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/logout" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/zenlyfAi" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/caregiverPatientScreen" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/newObservation" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/manageNotification" options={{ headerShown: false }}/>
+      <Stack.Screen name="MainScreen/languages" options={{ headerShown: false }}/>
+      
         </Stack>
       </SetupChecker>
     </UserProvider>

@@ -1,5 +1,7 @@
+import { svg } from '@/Config/Svg';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { SvgXml } from 'react-native-svg';
 import { colors } from '../../Config/colors';
 
 export default function CaregiverTabLayout() {
@@ -36,8 +38,25 @@ export default function CaregiverTabLayout() {
         name="patients"
         options={{
           title: 'Patients',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SvgXml 
+              xml={focused ? svg.patient : svg.inactivePatient} 
+              width={30} 
+              height={30} 
+            />
+          ),
+        }}
+      />
+       <Tabs.Screen
+        name="schedule"
+        options={{
+          title: 'Report',
+          tabBarIcon: ({ color, size, focused }) => (
+            <SvgXml 
+              xml={focused ? svg.activeReport : svg.report} 
+              width={30} 
+              height={30} 
+            />
           ),
         }}
       />
@@ -45,26 +64,26 @@ export default function CaregiverTabLayout() {
         name="inbox"
         options={{
           title: 'Inbox',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
+          tabBarIcon: ({ color, size,focused }) => (
+            <SvgXml 
+              xml={focused ? svg.inbox : svg.inactiveMessage} 
+              width={30} 
+              height={30} 
+            />
           ),
         }}
       />
-      <Tabs.Screen
-        name="schedule"
-        options={{
-          title: 'Schedule',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text" size={size} color={color} />
-          ),
-        }}
-      />
+     
       <Tabs.Screen
         name="setting"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SvgXml 
+            xml={focused ? svg.activeSettings : svg.inactiveSettings} 
+            width={30} 
+            height={30} 
+          />
           ),
         }}
       />
