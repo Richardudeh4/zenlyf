@@ -1,13 +1,12 @@
-import AppHeader from '@/components/AppHeader';
-import { svg } from '@/Config/Svg';
-import { Ionicons } from '@expo/vector-icons';
-import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import AppHeader from "@/components/AppHeader";
+import { svg } from "@/Config/Svg";
+import { Ionicons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
+
+import React, { useState } from "react";
 import {
   Alert,
-  Dimensions,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -17,28 +16,23 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native';
-import { SvgXml } from 'react-native-svg';
-import { colors } from '../../Config/colors';
-import { fonts } from '../../Config/Fonts';
-
-const { width, height } = Dimensions.get('window');
+  View,
+} from "react-native";
+import { SvgXml } from "react-native-svg";
+import { colors } from "../../Config/colors";
+import { fonts } from "../../Config/Fonts";
 
 const ZenlyfAi = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
-  const [messages, setMessages] = useState<Array<{id: string, text: string, isUser: boolean}>>([]);
-  const router = useRouter();
-  const handleBack = () => {
-    // Handle back navigation
-    console.log('Back pressed');
-  };
+  const [messages, setMessages] = useState<
+    { id: string; text: string; isUser: boolean }[]
+  >([]);
 
   const handleMoreOptions = () => {
     // Handle more options
-    console.log('More options pressed');
+    console.log("More options pressed");
   };
 
   const handleAttachment = () => {
@@ -48,19 +42,23 @@ const ZenlyfAi = () => {
   const handleCamera = () => {
     setShowAttachmentModal(false);
     // Handle camera functionality
-    console.log('Camera selected');
-    Alert.alert('Camera', 'Camera functionality would open here');
+    console.log("Camera selected");
+    Alert.alert("Camera", "Camera functionality would open here");
   };
 
   const handleGallery = async () => {
     setShowAttachmentModal(false);
-    
+
     try {
       // Request permission to access media library
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (status !== 'granted') {
-        Alert.alert('Permission Required', 'Please grant permission to access your photo library');
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Required",
+          "Please grant permission to access your photo library"
+        );
         return;
       }
 
@@ -73,42 +71,42 @@ const ZenlyfAi = () => {
       });
 
       if (!result.canceled && result.assets && result.assets[0]) {
-        console.log('Image selected:', result.assets[0].uri);
-        
-        Alert.alert('Success', 'Image selected successfully!');
+        console.log("Image selected:", result.assets[0].uri);
+
+        Alert.alert("Success", "Image selected successfully!");
       }
     } catch (error) {
-      console.error('Error picking image:', error);
-      Alert.alert('Error', 'Failed to pick image from gallery');
+      console.error("Error picking image:", error);
+      Alert.alert("Error", "Failed to pick image from gallery");
     }
   };
 
   const handleFilePicker = async () => {
     setShowAttachmentModal(false);
-    
+
     try {
       // Open document picker
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
+        type: "*/*",
         copyToCacheDirectory: true,
         multiple: false,
       });
 
       if (!result.canceled && result.assets && result.assets[0]) {
-        console.log('File selected:', result.assets[0]);
-        
-        Alert.alert('Success', `File selected: ${result.assets[0].name}`);
+        console.log("File selected:", result.assets[0]);
+
+        Alert.alert("Success", `File selected: ${result.assets[0].name}`);
       }
     } catch (error) {
-      console.error('Error picking file:', error);
-      Alert.alert('Error', 'Failed to pick file');
+      console.error("Error picking file:", error);
+      Alert.alert("Error", "Failed to pick file");
     }
   };
 
   const handleVoiceRecord = () => {
     setIsRecording(!isRecording);
     // Handle voice recording
-    console.log('Voice recording:', !isRecording);
+    console.log("Voice recording:", !isRecording);
   };
 
   const handleSend = () => {
@@ -117,10 +115,10 @@ const ZenlyfAi = () => {
       const userMessage = {
         id: Date.now().toString(),
         text: message,
-        isUser: true
+        isUser: true,
       };
-      setMessages(prev => [...prev, userMessage]);
-      
+      setMessages((prev) => [...prev, userMessage]);
+
       // Add AI response (simulate with atorvastatin side effects)
       const aiResponse = {
         id: (Date.now() + 1).toString(),
@@ -140,14 +138,14 @@ Less common but serious side effects (seek medical help if these occur):
 • Liver problems (yellowing of skin/eyes, dark urine, unusual fatigue)
 • Memory loss or confusion (rare)
 • Allergic reactions (rash, swelling, difficulty breathing)`,
-        isUser: false
+        isUser: false,
       };
-      
+
       setTimeout(() => {
-        setMessages(prev => [...prev, aiResponse]);
+        setMessages((prev) => [...prev, aiResponse]);
       }, 1000);
-      
-      setMessage('');
+
+      setMessage("");
     }
   };
 
@@ -155,8 +153,8 @@ Less common but serious side effects (seek medical help if these occur):
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-       <AppHeader showBackArrow />
-        
+        <AppHeader showBackArrow />
+
         <TouchableOpacity onPress={handleMoreOptions} style={styles.moreButton}>
           <Ionicons name="ellipsis-vertical" size={24} color={colors.black} />
         </TouchableOpacity>
@@ -166,9 +164,22 @@ Less common but serious side effects (seek medical help if these occur):
       <View style={styles.mainContent}>
         {messages.length === 0 ? (
           <>
-            <Text style={styles.title}><Text style={{fontWeight:"700"}}>Zenlyf AI -</Text> Your Health {"\n"} Companion</Text>
-            <Text style={[styles.subtitle, {textAlign:"center", display:'flex', justifyContent:"center", marginTop:20}]}>
-              Ask about medications, symptoms, reports, or wellness tips.
+            <Text style={styles.title}>
+              <Text style={{ fontWeight: "700" }}>Zenlyf AI -</Text> Your Health{" "}
+              {"\n"} Companion
+            </Text>
+            <Text
+              style={[
+                styles.subtitle,
+                {
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 12,
+                },
+              ]}
+            >
+              Ask about medications, symptoms, reports, {"\n"}or wellness tips.
             </Text>
           </>
         ) : (
@@ -178,15 +189,26 @@ Less common but serious side effects (seek medical help if these occur):
             contentContainerStyle={styles.scrollContent}
           >
             {messages.map((msg) => (
-              <View key={msg.id} style={msg.isUser ? styles.userMessage : styles.aiMessage}>
+              <View
+                key={msg.id}
+                style={msg.isUser ? styles.userMessage : styles.aiMessage}
+              >
                 <Text style={styles.messageText}>{msg.text}</Text>
                 {!msg.isUser && (
                   <View style={styles.actionIcons}>
                     <TouchableOpacity style={styles.actionIcon}>
-                      <Ionicons name="arrow-up" size={16} color={colors.black} />
+                      <Ionicons
+                        name="arrow-up"
+                        size={16}
+                        color={colors.black}
+                      />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.actionIcon}>
-                      <Ionicons name="volume-high" size={16} color={colors.black} />
+                      <Ionicons
+                        name="volume-high"
+                        size={16}
+                        color={colors.black}
+                      />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.actionIcon}>
                       <Ionicons name="create" size={16} color={colors.black} />
@@ -195,7 +217,11 @@ Less common but serious side effects (seek medical help if these occur):
                       <Ionicons name="copy" size={16} color={colors.black} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.actionIcon}>
-                      <Ionicons name="thumbs-up" size={16} color={colors.black} />
+                      <Ionicons
+                        name="thumbs-up"
+                        size={16}
+                        color={colors.black}
+                      />
                     </TouchableOpacity>
                   </View>
                 )}
@@ -206,13 +232,16 @@ Less common but serious side effects (seek medical help if these occur):
       </View>
 
       {/* Bottom Input Section */}
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.inputContainer}
       >
         <View style={styles.inputSection}>
           {/* Attachment Button */}
-          <TouchableOpacity onPress={handleAttachment} style={styles.attachmentButton}>
+          <TouchableOpacity
+            onPress={handleAttachment}
+            style={styles.attachmentButton}
+          >
             <Ionicons name="add" size={20} color={colors.black} />
           </TouchableOpacity>
 
@@ -227,41 +256,43 @@ Less common but serious side effects (seek medical help if these occur):
               multiline
               maxLength={500}
             />
-            
+
             {/* Voice Icon inside input */}
-            <View style={{display:"flex", flexDirection:"row", gap:10, alignItems:"center"}}>
-            <TouchableOpacity onPress={handleVoiceRecord} style={styles.voiceButton}>
-              <Ionicons 
-                name={isRecording ? "mic" : "mic-outline"} 
-                size={18} 
-                color={colors.black} 
-              />
-            </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={handleSend}
-            style={[
-              styles.sendButton,
-              isRecording && styles.recordingButton
-            ]}
-          >
-            {
-                isRecording ? (
-                    <>
-                    <SvgXml xml={svg.record}/>
-                    </>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={handleVoiceRecord}
+                style={styles.voiceButton}
+              >
+                <Ionicons
+                  name={isRecording ? "mic" : "mic-outline"}
+                  size={18}
+                  color={colors.black}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSend}
+                style={[
+                  styles.sendButton,
+                  isRecording && styles.recordingButton,
+                ]}
+              >
+                {isRecording ? (
+                  <>
+                    <SvgXml xml={svg.record} />
+                  </>
                 ) : (
-                    <>
-                    <Ionicons 
-                    name="send"
-                    size={16} 
-                    color={colors.white} 
-                  />
-                    </>
-                   
-                )
-            }
-          
-          </TouchableOpacity>
+                  <>
+                    <Ionicons name="send" size={16} color={colors.white} />
+                  </>
+                )}
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -284,23 +315,32 @@ Less common but serious side effects (seek medical help if these occur):
                 <Ionicons name="close" size={24} color={colors.black} />
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.attachmentOptions}>
-              <TouchableOpacity style={styles.attachmentOption} onPress={handleCamera}>
+              <TouchableOpacity
+                style={styles.attachmentOption}
+                onPress={handleCamera}
+              >
                 <View style={styles.optionIcon}>
                   <Ionicons name="camera" size={24} color={colors.primary} />
                 </View>
                 <Text style={styles.optionText}>Camera</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.attachmentOption} onPress={handleGallery}>
+              <TouchableOpacity
+                style={styles.attachmentOption}
+                onPress={handleGallery}
+              >
                 <View style={styles.optionIcon}>
                   <Ionicons name="images" size={24} color={colors.primary} />
                 </View>
                 <Text style={styles.optionText}>Gallery</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.attachmentOption} onPress={handleFilePicker}>
+              <TouchableOpacity
+                style={styles.attachmentOption}
+                onPress={handleFilePicker}
+              >
                 <View style={styles.optionIcon}>
                   <Ionicons name="folder" size={24} color={colors.primary} />
                 </View>
@@ -320,9 +360,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
@@ -335,33 +375,31 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight:"400",
+    fontWeight: "400",
     fontFamily: fonts.onestBold,
     color: "#050505",
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 16,
     lineHeight: 24,
-
   },
   subtitle: {
     fontSize: 16,
     fontFamily: fonts.onestLight,
     color: "#888888",
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 22,
   },
   inputContainer: {
-    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+    paddingBottom: Platform.OS === "ios" ? 20 : 10,
   },
   inputSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 20,
     gap: 12,
   },
@@ -369,20 +407,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#E3F2FD',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#E3F2FD",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textInputContainer: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
     backgroundColor: colors.white,
     borderWidth: 1,
-    display:"flex",
-    flexDirection:"row",
-    justifyContent:"space-between",
-    alignItems:"center",
-    borderColor: '#B3DAFF',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderColor: "#B3DAFF",
     borderRadius: 99,
     paddingHorizontal: 11,
     paddingVertical: 8,
@@ -393,27 +431,25 @@ const styles = StyleSheet.create({
     maxHeight: 100,
   },
   textInput: {
-   outline:"none"
+    outline: "none",
   },
-  voiceButton: {
-  
-  },
+  voiceButton: {},
   sendButton: {
     width: 36,
     height: 36,
     borderRadius: "50%",
-    display:"flex",
+    display: "flex",
     backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   recordingButton: {
-    backgroundColor: '#0077FF',
+    backgroundColor: "#0077FF",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
   },
   attachmentModal: {
     backgroundColor: colors.white,
@@ -424,9 +460,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 30,
   },
   modalTitle: {
@@ -435,28 +471,28 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   attachmentOptions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   attachmentOption: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   optionIcon: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#F8F9FA',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#F8F9FA",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 12,
   },
   optionText: {
     fontSize: 14,
     fontFamily: fonts.onestMedium,
     color: colors.black,
-    textAlign: 'center',
+    textAlign: "center",
   },
   messageContainer: {
     flex: 1,
@@ -467,15 +503,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   userMessage: {
-    backgroundColor: '#F2F9FF',
+    backgroundColor: "#F2F9FF",
     borderRadius: 18,
     borderBottomRightRadius: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    maxWidth: '75%',
-    alignSelf: 'flex-end',
+    maxWidth: "75%",
+    alignSelf: "flex-end",
     marginBottom: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -490,10 +526,10 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    maxWidth: '85%',
-    alignSelf: 'flex-start',
+    maxWidth: "85%",
+    alignSelf: "flex-start",
     marginBottom: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -505,13 +541,13 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     fontFamily: fonts.onestMedium,
-    color: '#000000',
+    color: "#000000",
     lineHeight: 22,
   },
   actionIcons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     marginTop: 8,
     gap: 12,
   },

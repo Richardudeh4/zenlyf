@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     },
     nextButton: {
         paddingHorizontal: 0.06 * width,
+        marginBottom: 20,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 11,
