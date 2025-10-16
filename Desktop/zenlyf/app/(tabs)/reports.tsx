@@ -1,52 +1,55 @@
-import { Entypo, Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import P from '@/components/P';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AppHeader from '../../components/AppHeader';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
-import { useRouter } from 'expo-router';
+import { getMe } from '../Requesthandler/Auth';
+import { Getreports } from '../Requesthandler/questions';
 
 const Reports = () => {
   const router = useRouter();
-  // Sample medical reports data
-  const medicalReports = [
-    {
-      id: 1,
-      title: 'CT Abdomen',
-      date: 'Apr 16, 2024',
-      status: 'Insight Ready',
-      statusColor: colors.primary,
-      iconColor: colors.primary,
-      icon: 'document-text',
-    },
-    {
-      id: 2,
-      title: 'Blood Test',
-      date: 'Mar 28, 2024',
-      status: 'Insight Ready',
-      statusColor: colors.primary,
-      iconColor: colors.primary,
-      icon: 'images',
-    },
-    {
-      id: 3,
-      title: 'MRI Brain',
-      date: 'Feb 5, 2024',
-      status: 'No insight',
-      statusColor: '#FF9800',
-      iconColor: '#FF9800',
-      icon: 'document-text',
-    },
-    {
-      id: 4,
-      title: 'ECG',
-      date: 'Jan 20, 2024',
-      status: 'pending...',
-      statusColor: colors.gray1,
-      iconColor: colors.gray1,
-      icon: 'images',
-    },
-  ];
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [reportData, setReportData] = useState<any>(null);
+
+
+  const getUserData = async() => {
+    try{
+      const response = await getMe();
+      console.log("response",response);
+      setUserData(response);
+    }
+    catch(error:any){
+      console.log("Error fetching user data",error);
+    }
+  }
+  const getUsersReports = async() => {
+    try{
+      setLoading(true);
+      const response = await Getreports(userData?.id);
+      setLoading(false);
+      setReportData(response);
+      console.log("Reports",response);
+    }
+    catch(error:any){
+      console.log("Error fetching reports",error);
+      setLoading(false);
+    } 
+    }
+
+    useEffect(() => {
+      getUserData();
+    }, [])
+
+    useEffect(() => {
+      if (userData?.id) {
+        getUsersReports();
+      }
+    }, [userData])
+
 
   const handleUploadReport = () => {
     console.log('Upload new report');
@@ -69,35 +72,34 @@ const Reports = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Medical Reports List */}
         <View style={styles.reportsSection}>
-          {medicalReports.map((report) => (
-            <View key={report.id} style={styles.reportCard}>
-              <View style={styles.reportInfo}>
-                <View style={[styles.reportIcon, { backgroundColor: report.iconColor }]}>
-                  <Ionicons name={report.icon as any} size={20} color={colors.white} />
-                </View>
-                <View style={styles.reportDetails}>
-                  <Text style={styles.reportTitle}>{report.title}</Text>
-                  <Text style={styles.reportDate}>{report.date}</Text>
-                </View>
-              </View>
-              <View style={[styles.statusButton, { backgroundColor: `${report.statusColor}20` }]}>
-                <Text style={[styles.statusText, { color: report.statusColor }]}>
-                  {report.status}
-                </Text>
-              </View>
-            </View>
-          ))}
+          {!reportData || reportData.length === 0 ? (
+            <>
+              <P>
+                No reports found
+              </P>
+            </>
+          ) : (
+            <>
+              {
+                reportData.map((item:any) => (
+                  <P key={item?.id}>
+                    {item?.hospital_name}
+                  </P>
+                ))
+              }
+            </>
+          )}
         </View>
 
         {/* Upload New Report Button */}
-        <View style={styles.uploadSection}>
+        {/* <View style={styles.uploadSection}>
           <TouchableOpacity 
           
           style={styles.uploadButton} onPress={handleUploadReport}>
           <Entypo name="share-alternative" size={24} color="black" />
             <Text style={styles.uploadButtonText}>Upload New Report</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/* Medication Reminder Card */}
         <View style={styles.medicationCard}>

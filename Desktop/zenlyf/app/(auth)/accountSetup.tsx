@@ -5,7 +5,7 @@ import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 import { useUser } from '../../contexts/UserContext';
 
-type UserRole = 'myself' | 'caregiver' | 'doctor';
+type UserRole = 'user' | 'caregiver' | 'doctor';
 
 const AccountSetup = () => {
   const { selectedRole, setSelectedRole, setHasCompletedSetup } = useUser();
@@ -44,7 +44,7 @@ const AccountSetup = () => {
 
   const renderIllustration = () => {
     switch (selectedRole) {
-      case 'myself':
+      case 'user':
         return (
           <View style={styles.illustrationContainer}>
            <Image source={require("../../assets/images/myself.png")} style={{width:140,height:248}}/>
@@ -91,7 +91,7 @@ const AccountSetup = () => {
 
       {/* Role Selection Buttons */}
       <View style={styles.roleSelection}>
-        {renderRoleButton('myself', 'Myself')}
+        {renderRoleButton('user', 'Myself')}
         {renderRoleButton('caregiver', 'Caregiver')}
         {renderRoleButton('doctor', "I'm a Doctor")}
       </View>

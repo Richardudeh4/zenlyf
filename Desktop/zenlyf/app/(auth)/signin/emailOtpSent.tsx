@@ -1,4 +1,6 @@
-import { useRouter } from 'expo-router';
+import { VerifyOtp } from '@/app/Requesthandler/Auth';
+import { useToast } from '@/contexts/ToastContext';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import AppHeader from '../../../components/AppHeader';
@@ -8,9 +10,12 @@ import { fonts } from '../../../Config/Fonts';
 
 const EmailOtpSent = () => {
   const router = useRouter();
+  const { email } = useLocalSearchParams();
   const [otpCode, setOtpCode] = useState('');
-  const [timeLeft, setTimeLeft] = useState(20); // 20 seconds countdown
+  const [timeLeft, setTimeLeft] = useState(60); // 20 seconds countdown
   const [canResend, setCanResend] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const { showToast } = useToast();
 
   // Countdown timer
   useEffect(() => {
@@ -22,12 +27,25 @@ const EmailOtpSent = () => {
     }
   }, [timeLeft]);
 
-  const handleOtpComplete = (code: string) => {
-    // Simulate OTP verification
-    setTimeout(() => {
-      // Navigate to success screen (you can replace this with your actual success screen route)
-      router.push('/(auth)/signin/verifiedUser');
-    }, 500);
+  const handleOtpComplete = async (code: string) => {
+    if (isVerifying) return; // Prevent multiple submissions
+    
+    try{
+      setIsVerifying(true);
+      const response = await VerifyOtp(code, email as string);
+      console.log("VerifyOtp response:", response);
+      showToast("OTP verified successfully", "success");
+      
+      // Small delay before navigation to ensure toast is shown
+      setTimeout(() => {
+        router.push("/(auth)/signup/AccountCreated");
+      }, 500);
+    }
+    catch(error:any){
+      setIsVerifying(false);
+      showToast(error?.message || "Failed to verify OTP", "error");
+      console.log("error", error?.message)
+    }
   };
 
   const handleResendCode = () => {
@@ -53,7 +71,7 @@ const EmailOtpSent = () => {
       
       <View style={styles.content}>
         <Text style={styles.description}>
-          Enter the code we sent to ***956
+          Enter the code we sent to you
         </Text>
 
         <View style={styles.otpContainer}>

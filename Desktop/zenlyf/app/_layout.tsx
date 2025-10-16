@@ -1,6 +1,7 @@
 import { useFonts } from 'expo-font';
 import { Stack } from "expo-router";
 import SetupChecker from '../components/SetupChecker';
+import { ToastProvider } from '../contexts/ToastContext';
 import { UserProvider } from '../contexts/UserContext';
 
 export default function RootLayout() {
@@ -9,15 +10,16 @@ export default function RootLayout() {
   });
   return (
     <UserProvider>
-      <SetupChecker>
-        <Stack>
+      <ToastProvider>
+        <SetupChecker>
+          <Stack>
     <Stack.Screen name="splash" options={{ headerShown: false }} />
     <Stack.Screen name="index" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/welcomescreen" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/screentwo" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/getstarted" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/signup/index" options={{ headerShown: false }} />
-    <Stack.Screen name="(auth)/signup/healthOnboarding1" options={{ headerShown: false }} />
+    <Stack.Screen name="(auth)/signup/healthOnboarding1" options={{ headerShown: false}} />
     <Stack.Screen name="(auth)/signup/healthOnboarding2" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/signup/AccountCreated" options={{ headerShown: false }} />
     <Stack.Screen name="(auth)/signup/reviewingDocument" options={{ headerShown: false }} />
@@ -72,8 +74,9 @@ export default function RootLayout() {
       <Stack.Screen name="MainScreen/manageNotification" options={{ headerShown: false }}/>
       <Stack.Screen name="MainScreen/languages" options={{ headerShown: false }}/>
       
-        </Stack>
-      </SetupChecker>
+          </Stack>
+        </SetupChecker>
+      </ToastProvider>
     </UserProvider>
   )
 

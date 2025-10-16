@@ -1,12 +1,13 @@
 import { svg } from '@/Config/Svg';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, Dimensions, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
 import P from '@/components/P';
+import { getMe } from '../Requesthandler/Auth';
 
 
 const { height, width } = Dimensions.get("window");
@@ -17,7 +18,22 @@ export default function HomeScreen() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState('User');
   const router = useRouter();
+  const [userData, setUserData] = useState<any>(null);
+
+const getUserData = async () => {
+try{
+const response = await getMe();
+console.log("UserData", response);
+setUserData(response);
+}
+catch(error:any){
+console.log("Error", error);
+}
+}
   
+useEffect(() => {
+  getUserData();
+}, []);
   // Floating logo animation
   const floatingAnimation = React.useRef(new Animated.Value(0)).current;
 
@@ -69,7 +85,7 @@ export default function HomeScreen() {
               </View>
             </View>
             <View style={styles.greetingSection}>
-              <Text style={styles.greeting}>Good day, Ebere!</Text>
+              <Text style={styles.greeting}>Good day, {userData?.first_name}!</Text>
               <Text style={styles.subGreeting}>You're doing great today!</Text>
             </View>
           </View>
@@ -281,7 +297,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         {/* Streaks & Rewards */}
-        <TouchableOpacity style={styles.rewardsSection}>
+        {/* <TouchableOpacity style={styles.rewardsSection}>
           <View style={styles.rewardsCard}>
             <View style={styles.rewardsHeader}>
               <Ionicons name="flame" size={20} color="#FF9800" />
@@ -292,7 +308,7 @@ export default function HomeScreen() {
               <Text style={styles.rewardsButtonText}>View Rewards</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={{padding:10, borderRadius:20, backgroundColor:"#EFF6FD", marginHorizontal:24, marginBottom:20}}>
             <TouchableOpacity style={{display:"flex", flexDirection:"row", gap:24, alignItems:"center", width:"100%", paddingVertical:20}}>

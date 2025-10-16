@@ -1,12 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
+import { getMe, GetUser } from '../Requesthandler/Auth';
 
 const Profile = () => {
   const [familyName, setFamilyName] = useState('');
   const [familyPhone, setFamilyPhone] = useState('');
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const getUserData = async() =>{
+    setLoading(true);
+    try{
+      const response = await getMe();
+      setUserData(response);
+      console.log("User data",response);
+      setLoading(false);
+    }
+    catch(error:any){
+      console.log("Error fetching user data",error);
+      setLoading(false);
+    }
+  }
+
+  useEffect(()=>{
+    getUserData();
+  },[])
 
   const handleSwitchRoles = () => {
     console.log('Switch roles pressed');
@@ -65,6 +86,12 @@ const Profile = () => {
     </View>
   );
 
+  if(loading){
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size="large" color={colors.primary} />
+  </View>
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -80,7 +107,7 @@ const Profile = () => {
           <View style={styles.profileInfo}>
            
               <Image source={require('../../assets/images/avatar.png')} alt="avatar" style={styles.profileImage} />
-            <Text style={styles.profileName}>Ebere Madu, 75</Text>
+            <Text style={styles.profileName}>{userData?.first_name} {userData?.last_name}</Text>
             <View style={{display:"flex", flexDirection:"row", alignItems:"center", gap:10}}>
             <Text style={styles.wellnessScoreLabel}>Zenlyf Wellness Score</Text>
             <View style={styles.wellnessScoreBadge}>
@@ -89,7 +116,7 @@ const Profile = () => {
             </View>
            
             <TouchableOpacity style={styles.switchRolesButton} onPress={handleSwitchRoles}>
-              <Text style={styles.switchRolesText}>Switch roles</Text>
+              <Text style={styles.switchRolesText}>{userData?.role}</Text>
               <Ionicons name="chevron-down" size={16} color={colors.primary} />
             </TouchableOpacity>
           </View>
@@ -100,12 +127,12 @@ const Profile = () => {
           <View style={styles.basicInfoContent}>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Email:</Text>
-              <Text style={styles.infoValue}>ebere.madu@gmail.com</Text>
+              <Text style={styles.infoValue}>{userData?.email}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Phone No.:</Text>
               <View style={styles.phoneContainer}>
-                <Text style={styles.infoValue}>+234 812 345 5678</Text>
+                <Text style={styles.infoValue}>{userData?.phone}</Text>
                 <Ionicons name="chevron-forward" size={16} color={colors.gray1} />
               </View>
             </View>
@@ -120,10 +147,15 @@ const Profile = () => {
         {renderSection('Health Conditions', (
           <View style={styles.healthConditionsContent}>
             <View style={styles.conditionItem}>
-              <View style={styles.conditionIcon}>
+              <View style={{width:"100%", display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+                <View style={{display:"flex", flexDirection:"row", alignItems:"center",}}>
+                <View style={styles.conditionIcon}>
                 <Ionicons name="radio-button-on" size={16} color={colors.primary} />
               </View>
-              <Text style={styles.conditionText}>Hypertension</Text>
+              <Text style={styles.conditionText}>Blood Type</Text>
+                </View>
+                <Text style={styles.conditionText}>{userData?.blood_type}</Text>
+              </View>
             </View>
             <View style={styles.conditionItem}>
               <View style={styles.conditionIcon}>
@@ -520,6 +552,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.onestMedium,
     color: colors.black,
     marginBottom: 12,
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   adherenceContainer: {
     alignItems: 'center',

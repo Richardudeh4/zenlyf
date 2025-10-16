@@ -39,6 +39,17 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "04e30776-b160-4464-9982-ca69ce626078"
+      }
+    },
+    "owner": "zenlyf",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/04e30776-b160-4464-9982-ca69ce626078"
     }
   }
 }

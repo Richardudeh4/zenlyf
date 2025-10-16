@@ -1,4 +1,5 @@
 import { colors } from '@/Config/colors';
+import { Login, saveAuthToken } from '@/app/Requesthandler/Auth';
 import AppHeader from '@/components/AppHeader';
 import P from '@/components/P';
 import { useRouter } from 'expo-router';
@@ -21,23 +22,44 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleSignIn = () => {
-    // Handle sign in logic here
-    console.log('Sign in:', { email, password, role: selectedRole });
-    // For demo purposes, set logged in to true
-    setIsLoggedIn(true);
-  
-    if (selectedRole === 'doctor') {
-      router.replace('/(doctor-tabs)');
-    } else if (selectedRole === 'caregiver') {
-      router.replace('/(caregiver-tabs)');
-    } else {
-      // Default to regular tabs for 'myself' role
-      router.replace('/(tabs)');
-    }
+  const handleSignIn = async () => {
+    setIsLoading(true);
+    try {
     
+      const loginData = {
+        email: email,
+        password: password
+      };
+      
+      console.log('Sign in:', { email, password, role: selectedRole });
+      const response = await Login(loginData);
+      console.log("Login response:", response);
+      
+      // Save the tokens - map access_token and refresh_token to access and refresh
+      if (response?.access_token && response?.refresh_token) {
+        await saveAuthToken({
+          access: response.access_token,
+          refresh: response.refresh_token
+        });
+        console.log("Tokens saved successfully");
+        setIsLoggedIn(true);
+      }
+      
+      if (selectedRole === 'doctor') {
+        router.replace('/(doctor-tabs)');
+      } else if (selectedRole === 'caregiver') {
+        router.replace('/(caregiver-tabs)');
+      } else {
+        // Default to regular tabs for 'myself' role
+        router.replace('/(tabs)');
+      }
+    } catch (error: any) {
+      setIsLoading(false);
+      console.log(error);
+    }
   };
 
   const handleSignUp = () => {
@@ -86,7 +108,7 @@ const SignInScreen = () => {
                 placeholder="Email"
                 placeholderTextColor="#999999"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => setEmail(text)}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -100,7 +122,7 @@ const SignInScreen = () => {
                 placeholder="Password"
                 placeholderTextColor="#999999"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => setPassword(text)}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 autoCorrect={false}

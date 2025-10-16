@@ -58,3 +58,39 @@ export const formatDate = (isoDateString: string, includeTime: boolean = false):
 export const formatDateTime = (isoDateString: string): string => {
   return formatDate(isoDateString, true);
 };
+
+/**
+ * Formats a date to YYYY-MM-DD format for backend submission
+ * @param dateInput - Date string in various formats or Date object
+ * @returns Formatted date string in YYYY-MM-DD format
+ */
+export const formatDateForBackend = (dateInput: string | Date): string => {
+  if (!dateInput) return '';
+  
+  try {
+    let date: Date;
+    
+    // If it's already a Date object, use it directly
+    if (dateInput instanceof Date) {
+      date = dateInput;
+    } else {
+      // Parse the string as a date
+      date = new Date(dateInput);
+    }
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
+    // Format as YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    console.error('Error formatting date for backend:', error);
+    return '';
+  }
+};

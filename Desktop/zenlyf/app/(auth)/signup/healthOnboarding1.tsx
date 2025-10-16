@@ -15,124 +15,127 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
+import { useToast } from '../../../contexts/ToastContext';
 import { useUser } from '../../../contexts/UserContext';
+import { formatDateForBackend } from '../../../utils/DateUtils';
+import { CreateUser } from '../../Requesthandler/Auth';
 
 
-const educationalQualification = [
-    {value: "no_formal_education", label: "No Formal Education"},
-    {value: "primary", label: "Primary Education"},
-    {value: "secondary", label: "Secondary Education"},
-    {value: "high_school", label: "High School"},
-    {value: "diploma", label: "Diploma"},
-    {value: "bachelor", label: "Bachelor's Degree"},
-    {value: "master", label: "Master's Degree"},
-    {value: "doctorate", label: "Doctorate/PhD"},
-    {value: "professional", label: "Professional Certification"},
-    {value: "trade_school", label: "Trade/Vocational School"},
-    {value: "associate", label: "Associate Degree"},
-    {value: "other", label: "Other"}
+const educationalQualificationOptions = [
+  { value: "no_formal_education", label: "No Formal Education" },
+  { value: "primary", label: "Primary Education" },
+  { value: "secondary", label: "Secondary Education" },
+  { value: "high_school", label: "High School" },
+  { value: "diploma", label: "Diploma" },
+  { value: "bachelor", label: "Bachelor's Degree" },
+  { value: "master", label: "Master's Degree" },
+  { value: "doctorate", label: "Doctorate/PhD" },
+  { value: "professional", label: "Professional Certification" },
+  { value: "trade_school", label: "Trade/Vocational School" },
+  { value: "associate", label: "Associate Degree" },
+  { value: "other", label: "Other" }
 ];
 
-const religion = [
-    {value: "christianity", label: "Christianity"},
-    {value: "islam", label: "Islam"},
-    {value: "judaism", label: "Judaism"},
-    {value: "hinduism", label: "Hinduism"},
-    {value: "buddhism", label: "Buddhism"},
-    {value: "sikhism", label: "Sikhism"},
-    {value: "jainism", label: "Jainism"},
-    {value: "bahai", label: "Baháʼí Faith"},
-    {value: "confucianism", label: "Confucianism"},
-    {value: "taoism", label: "Taoism"},
-    {value: "shintoism", label: "Shintoism"},
-    {value: "traditional_african", label: "Traditional African Religion"},
-    {value: "atheism", label: "Atheism"},
-    {value: "agnosticism", label: "Agnosticism"},
-    {value: "secular", label: "Secular/Non-religious"},
-    {value: "prefer_not_to_say", label: "Prefer not to say"},
-    {value: "other", label: "Other"}
+const religionOptions = [
+  { value: "christianity", label: "Christianity" },
+  { value: "islam", label: "Islam" },
+  { value: "judaism", label: "Judaism" },
+  { value: "hinduism", label: "Hinduism" },
+  { value: "buddhism", label: "Buddhism" },
+  { value: "sikhism", label: "Sikhism" },
+  { value: "jainism", label: "Jainism" },
+  { value: "bahai", label: "Baháʼí Faith" },
+  { value: "confucianism", label: "Confucianism" },
+  { value: "taoism", label: "Taoism" },
+  { value: "shintoism", label: "Shintoism" },
+  { value: "traditional_african", label: "Traditional African Religion" },
+  { value: "atheism", label: "Atheism" },
+  { value: "agnosticism", label: "Agnosticism" },
+  { value: "secular", label: "Secular/Non-religious" },
+  { value: "prefer_not_to_say", label: "Prefer not to say" },
+  { value: "other", label: "Other" }
 ];
 
 
-const bloodGroup = [
-    {value: "a_positive", label: "A+"},
-    {value: "a_negative", label: "A-"},
-    {value: "b_positive", label: "B+"},
-    {value: "b_negative", label: "B-"},
-    {value: "ab_positive", label: "AB+"},
-    {value: "ab_negative", label: "AB-"},
-    {value: "o_positive", label: "O+"},
-    {value: "o_negative", label: "O-"},
-    {value: "unknown", label: "Unknown"}
+const bloodGroupOptions = [
+  { value: "a_positive", label: "A+" },
+  { value: "a_negative", label: "A-" },
+  { value: "b_positive", label: "B+" },
+  { value: "b_negative", label: "B-" },
+  { value: "abpositive", label: "AB+" },
+  { value: "abnegative", label: "AB-" },
+  { value: "o_positive", label: "O+" },
+  { value: "o_negative", label: "O-" },
+  { value: "unknown", label: "Unknown" }
 ];
-const disabilityType = [
-    {value: "none", label: "No Disability"},
-    {value: "visual_impairment", label: "Visual Impairment"},
-    {value: "hearing_impairment", label: "Hearing Impairment"},
-    {value: "speech_impairment", label: "Speech Impairment"},
-    {value: "physical_disability", label: "Physical Disability"},
-    {value: "intellectual_disability", label: "Intellectual Disability"},
-    {value: "learning_disability", label: "Learning Disability"},
-    {value: "autism_spectrum", label: "Autism Spectrum Disorder"},
-    {value: "mental_health", label: "Mental Health Condition"},
-    {value: "neurological", label: "Neurological Condition"},
-    {value: "chronic_illness", label: "Chronic Illness"},
-    {value: "mobility_impairment", label: "Mobility Impairment"},
-    {value: "cognitive_disability", label: "Cognitive Disability"},
-    {value: "multiple_disabilities", label: "Multiple Disabilities"},
-    {value: "other", label: "Other"},
-    {value: "prefer_not_to_say", label: "Prefer not to say"}
+const disabilityTypeOptions = [
+  { value: "none", label: "No Disability" },
+  { value: "visual_impairment", label: "Visual Impairment" },
+  { value: "hearing_impairment", label: "Hearing Impairment" },
+  { value: "speech_impairment", label: "Speech Impairment" },
+  { value: "physical_disability", label: "Physical Disability" },
+  { value: "intellectual_disability", label: "Intellectual Disability" },
+  { value: "learning_disability", label: "Learning Disability" },
+  { value: "autism_spectrum", label: "Autism Spectrum Disorder" },
+  { value: "mental_health", label: "Mental Health Condition" },
+  { value: "neurological", label: "Neurological Condition" },
+  { value: "chronic_illness", label: "Chronic Illness" },
+  { value: "mobility_impairment", label: "Mobility Impairment" },
+  { value: "cognitive_disability", label: "Cognitive Disability" },
+  { value: "multiple_disabilities", label: "Multiple Disabilities" },
+  { value: "other", label: "Other" },
+  { value: "prefer_not_to_say", label: "Prefer not to say" }
 ];
 
-const assistanceRequired = [
-    {value: "none", label: "No Assistance Required"},
-    {value: "mobility_assistance", label: "Mobility Assistance"},
-    {value: "visual_assistance", label: "Visual Assistance"},
-    {value: "hearing_assistance", label: "Hearing Assistance"},
-    {value: "communication_assistance", label: "Communication Assistance"},
-    {value: "cognitive_assistance", label: "Cognitive Assistance"},
-    {value: "personal_care", label: "Personal Care Assistance"},
-    {value: "medication_management", label: "Medication Management"},
-    {value: "transportation", label: "Transportation Assistance"},
-    {value: "technology_assistance", label: "Technology Assistance"},
-    {value: "sign_language", label: "Sign Language Interpreter"},
-    {value: "reading_assistance", label: "Reading Assistance"},
-    {value: "writing_assistance", label: "Writing Assistance"},
-    {value: "emergency_assistance", label: "Emergency Assistance"},
-    {value: "other", label: "Other Assistance"},
-    {value: "multiple", label: "Multiple Types of Assistance"}
+const assistanceRequiredOptions = [
+  { value: "none", label: "No Assistance Required" },
+  { value: "mobility_assistance", label: "Mobility Assistance" },
+  { value: "visual_assistance", label: "Visual Assistance" },
+  { value: "hearing_assistance", label: "Hearing Assistance" },
+  { value: "communication_assistance", label: "Communication Assistance" },
+  { value: "cognitive_assistance", label: "Cognitive Assistance" },
+  { value: "personal_care", label: "Personal Care Assistance" },
+  { value: "medication_management", label: "Medication Management" },
+  { value: "transportation", label: "Transportation Assistance" },
+  { value: "technology_assistance", label: "Technology Assistance" },
+  { value: "sign_language", label: "Sign Language Interpreter" },
+  { value: "reading_assistance", label: "Reading Assistance" },
+  { value: "writing_assistance", label: "Writing Assistance" },
+  { value: "emergency_assistance", label: "Emergency Assistance" },
+  { value: "other", label: "Other Assistance" },
+  { value: "multiple", label: "Multiple Types of Assistance" }
 ];
-const languageReference = [
-    {value: "english", label: "English"},
-    {value: "spanish", label: "Spanish"},
-    {value: "mandarin", label: "Mandarin Chinese"},
-    {value: "hindi", label: "Hindi"},
-    {value: "arabic", label: "Arabic"},
-    {value: "bengali", label: "Bengali"},
-    {value: "portuguese", label: "Portuguese"},
-    {value: "russian", label: "Russian"},
-    {value: "japanese", label: "Japanese"},
-    {value: "punjabi", label: "Punjabi"},
-    {value: "german", label: "German"},
-    {value: "javanese", label: "Javanese"},
-    {value: "wu_chinese", label: "Wu Chinese"},
-    {value: "malay", label: "Malay"},
-    {value: "telugu", label: "Telugu"},
-    {value: "vietnamese", label: "Vietnamese"},
+const languageReferenceOptions = [
+  { value: "english", label: "English" },
+  { value: "spanish", label: "Spanish" },
+  { value: "mandarin", label: "Mandarin Chinese" },
+  { value: "hindi", label: "Hindi" },
+  { value: "arabic", label: "Arabic" },
+  { value: "bengali", label: "Bengali" },
+  { value: "portuguese", label: "Portuguese" },
+  { value: "russian", label: "Russian" },
+  { value: "japanese", label: "Japanese" },
+  { value: "punjabi", label: "Punjabi" },
+  { value: "german", label: "German" },
+  { value: "javanese", label: "Javanese" },
+  { value: "wu_chinese", label: "Wu Chinese" },
+  { value: "malay", label: "Malay" },
+  { value: "telugu", label: "Telugu" },
+  { value: "vietnamese", label: "Vietnamese" },
 ]
 const gender = [
-    {value:"male", label: "Male"},
-    {value:"female", label: "Female"},
-    {value:"others", label: "Others"},
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "others", label: "Others" },
 ]
-const maritalStatus = [
-    {value: "single", label: "Single"},
-    {value: "married", label: "Married"},
-]
+const maritalStatusOptions = [
+   { value: "single", label: "Single" },
+   { value: "married", label: "Married" },
+ ]
 const userRole = [
-    {value:"user", label:"User"},
-    {value:"caregiver", label:"Caregiver"},
-    {value:"doctor", label:"Doctor"},
+  { value: "user", label: "User" },
+  { value: "caregiver", label: "Caregiver" },
+  { value: "doctor", label: "Doctor" },
 ]
 
 interface CircularProgressProps {
@@ -158,7 +161,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  
+
   // Calculate progress for each step (since we have 2 steps, each is 50% of the circle)
   const stepProgress = circumference / totalSteps;
   const currentProgress = stepProgress * currentStep;
@@ -167,7 +170,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const center = size / 2;
 
   return (
-    <View style={[styles.container, { width: size, height: size}]}>
+    <View style={[styles.container, { width: size, height: size }]}>
       <Svg width={size} height={size} style={styles.svg}>
         <G rotation="-90" origin={`${center}, ${center}`}>
           {/* Background circle */}
@@ -180,7 +183,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
             fill={backgroundColor}
             strokeLinecap="round"
           />
-          
+
           {/* Progress circle */}
           <Circle
             cx={center}
@@ -195,11 +198,11 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
           />
         </G>
       </Svg>
-      
+
       {/* Text in the middle */}
       <View style={styles.textContainer}>
         <Text style={[styles.text, textStyle]}>
-         <Text style={{fontFamily:"900"}}>{currentStep}</Text>/{totalSteps}
+          <Text style={{ fontFamily: "900" }}>{currentStep}</Text>/{totalSteps}
         </Text>
       </View>
     </View>
@@ -208,6 +211,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
 const HealthOnboardingOne = () => {
   const { setHasCompletedSetup } = useUser();
+  const { showToast } = useToast();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
@@ -216,1255 +220,1375 @@ const HealthOnboardingOne = () => {
   const [selectedGender, setSelectedGender] = useState<string>("");
   const [isGenderModalVisible, setIsGenderModalVisible] = useState<boolean>(false);
   const [isSpecializationModalVisible, setIsSpecializationModalVisible] = useState<boolean>(false);
-    const [selectedRoleType, setSelectedRoleType] = useState<string>("professional");
-    const [organizationName, setOrganizationName] = useState<string>("");
-    const [supervisorContact, setSupervisorContact] = useState<string>("");
-    const [doctorsCode, setDoctorsCode] = useState<string>("");
-    const [isIndependentCaregiver, setIsIndependentCaregiver] = useState<boolean>(false);
-    const [idBadgeImage, setIdBadgeImage] = useState<string | null>(null);
-    const [organizationIdImage, setOrganizationIdImage] = useState<string | null>(null);
-    const [selectedSpecialization, setSelectedSpecialization] = useState<string>("");
-    const [hospitalName, setHospitalName] = useState<string>("");
-    const [hospitalAddress, setHospitalAddress] = useState<string>("");
-    const [facilityContact, setFacilityContact] = useState<string>("");
-    const [hospitalIdImage, setHospitalIdImage] = useState<string | null>(null);
-    const [referralLetterImage, setReferralLetterImage] = useState<string | null>(null);
-    const [uploadedDocuments, setUploadedDocuments] = useState<Array<{name: string, uri: string, type: string}>>([]);
-    const router = useRouter();
-        const { role } = useLocalSearchParams();
+  const [selectedRoleType, setSelectedRoleType] = useState<string>("professional");
+  const [organizationName, setOrganizationName] = useState<string>("");
+  const [supervisorContact, setSupervisorContact] = useState<string>("");
+  const [doctorsCode, setDoctorsCode] = useState<string>("");
+  const [isIndependentCaregiver, setIsIndependentCaregiver] = useState<boolean>(false);
+  const [idBadgeImage, setIdBadgeImage] = useState<string | null>(null);
+  const [organizationIdImage, setOrganizationIdImage] = useState<string | null>(null);
+  const [selectedSpecialization, setSelectedSpecialization] = useState<string>("");
+  const [hospitalName, setHospitalName] = useState<string>("");
+  const [hospitalAddress, setHospitalAddress] = useState<string>("");
+  const [facilityContact, setFacilityContact] = useState<string>("");
+  const [hospitalIdImage, setHospitalIdImage] = useState<string | null>(null);
+  const [referralLetterImage, setReferralLetterImage] = useState<string | null>(null);
+  const [uploadedDocuments, setUploadedDocuments] = useState<Array<{ name: string, uri: string, type: string }>>([]);
+  const [dateOfBirth, setDateOfBirth] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+   const [lastName, setLastName] = useState<string>("");
+   const [occupation, setOccupation] = useState<string>("");
+   const [maritalStatus, setMaritalStatus] = useState<string>("");
+   const [educationalQualification, setEducationalQualification] = useState<string>("");
+   const [religion, setReligion] = useState<string>("");
+   const [bloodGroup, setBloodGroup] = useState<string>("");
+   const [disabilityType, setDisabilityType] = useState<string>("");
+   const [assistanceRequired, setAssistanceRequired] = useState<string>("");
+   const [languagePreference, setLanguagePreference] = useState<string>("");
+   const router = useRouter();
+  const { role, email, password, confirmPassword, terms } = useLocalSearchParams();
 
-    const pickImage = async (type: 'idBadge' | 'organizationId' | 'hospitalId' | 'referralLetter') => {
-      // Request permissions
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  // Debug logging
+  console.log('HealthOnboardingOne - Received params:', { role, email, password, confirmPassword, terms });
+
+  // Helper function to get formatted date for backend
+  const getFormattedDateOfBirth = () => {
+    return formatDateForBackend(dateOfBirth);
+  };
+
+  // Handle user signup
+  const handleCreateUser = async () => {
+    try {
+      setLoading(true);
       
-      if (status !== 'granted') {
-        Alert.alert('Permission Required', 'Sorry, we need camera roll permissions to upload images!');
-        return;
-      }
+      // Prepare request body - Match Swagger format with proper defaults
+      const requestBody = {
+        email: email as string,
+        first_name: firstName,
+        last_name: lastName,
+        middle_name: "string", // Backend doesn't accept empty string
+        other_names: "string", // Backend doesn't accept empty string
+        username: email as string, // Using email as username for now
+        phone: phoneNumber.slice(0, 10), // Database only accepts 10 characters max
+        gender: selectedGender,
+        blood_type: bloodGroup,
+        date_of_birth: getFormattedDateOfBirth(),
+        occupation: occupation || "Not specified", // Ensure not empty with better default
+        edu_qualification: educationalQualification || "primary",
+        religion: religion || "Not specified",
+        genotype: "AA", // Default genotype - backend requires one of: AA, AS, SS, AC, SC, CC
+        disability: disabilityType || "None", // Backend expects 'disability' not 'disability_type'
+        assistance_required: assistanceRequired || "None",
+        language: languagePreference || "English", // Better default than "string"
+        marital_status: maritalStatus || "single", // Better default than "string"
+        password: password as string,
+        confirm_password: confirmPassword as string, // Backend expects this
+        country: "United States", // Better default than "string"
+        role: role as string,
+        terms: terms === "true"
+      };
 
-      // Launch image picker
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+      console.log('Creating user with data:', requestBody);
+      const response = await CreateUser(requestBody);
+      
+      console.log('User created successfully:', response);
+      showToast('Account created successfully!', 'success');
+    
+      setHasCompletedSetup(true);
+      router.push(`/(auth)/signin/emailOtpSent?email=${encodeURIComponent(email as string)}`);
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      
+      let errorMessage = 'Failed to create account. Please try again.';
+      
+      // Handle backend validation errors
+      if (error?.detail) {
+        if (Array.isArray(error.detail)) {
+          // Extract validation error messages
+          const validationErrors = error.detail.map((err: any) => err.msg).join(', ');
+          errorMessage = `Validation error: ${validationErrors}`;
+        } else if (typeof error.detail === 'string') {
+          errorMessage = error.detail;
+        } else {
+          errorMessage = JSON.stringify(error.detail);
+        }
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error) {
+        errorMessage = error.error;
+      }
+      
+      showToast(errorMessage, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const pickImage = async (type: 'idBadge' | 'organizationId' | 'hospitalId' | 'referralLetter') => {
+    // Request permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Sorry, we need camera roll permissions to upload images!');
+      return;
+    }
+
+    // Launch image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      if (type === 'idBadge') {
+        setIdBadgeImage(result.assets[0].uri);
+      } else if (type === 'organizationId') {
+        setOrganizationIdImage(result.assets[0].uri);
+      } else if (type === 'hospitalId') {
+        setHospitalIdImage(result.assets[0].uri);
+      } else if (type === 'referralLetter') {
+        setReferralLetterImage(result.assets[0].uri);
+      }
+    }
+  };
+
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*', // Allow all file types
+        copyToCacheDirectory: true,
       });
 
-      if (!result.canceled) {
-        if (type === 'idBadge') {
-          setIdBadgeImage(result.assets[0].uri);
-        } else if (type === 'organizationId') {
-          setOrganizationIdImage(result.assets[0].uri);
-        } else if (type === 'hospitalId') {
-          setHospitalIdImage(result.assets[0].uri);
-        } else if (type === 'referralLetter') {
-          setReferralLetterImage(result.assets[0].uri);
-        }
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const document = result.assets[0];
+        setUploadedDocuments(prev => [...prev, {
+          name: document.name || 'Document',
+          uri: document.uri,
+          type: document.mimeType || 'application/octet-stream'
+        }]);
+        Alert.alert('Success', 'Document uploaded successfully!');
       }
-    };
+    } catch (error) {
+      Alert.alert('Error', 'Failed to upload document. Please try again.');
+      console.error('Document picker error:', error);
+    }
+  };
+  const handleStepOneValidation = () => {
+    if (firstName.trim() === "" || lastName.trim() === "" || selectedGender.trim() === "" || dateOfBirth.trim() === "" || phoneNumber.trim() === "") {
+      showToast('Please fill all the fields', 'error');
+      return;
+    }
+    if (dateOfBirth > new Date().toISOString()) {
+      showToast('Date of birth cannot be in the future', 'error');
+      return;
+    }
+    try {
+      showToast('Step 1 completed successfully!', 'success');
+      setCurrentStep(2);
+    }
+    catch (error: any) {
+      showToast('An error occurred. Please try again.', 'error');
+    }
 
-    const pickDocument = async () => {
-      try {
-        const result = await DocumentPicker.getDocumentAsync({
-          type: '*/*', // Allow all file types
-          copyToCacheDirectory: true,
-        });
+  }
 
-        if (!result.canceled && result.assets && result.assets.length > 0) {
-          const document = result.assets[0];
-          setUploadedDocuments(prev => [...prev, {
-            name: document.name || 'Document',
-            uri: document.uri,
-            type: document.mimeType || 'application/octet-stream'
-          }]);
-          Alert.alert('Success', 'Document uploaded successfully!');
-        }
-      } catch (error) {
-        Alert.alert('Error', 'Failed to upload document. Please try again.');
-        console.error('Document picker error:', error);
-      }
-    };
-
-    return (
-    <SafeAreaView style={{flex:1, backgroundColor:"white"}}>
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
-        >
-    <View style={{display:"flex", flexDirection:"column", gap:40, paddingHorizontal:24}}>
-        {
-          role == "myself" && (
-            <>
-      <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={2}
-          />
-        </View>
-        <View style={{display:"flex", flexDirection:"column", gap:14}}>
-        <Text style={{fontSize:32, fontWeight:"700", color:"#050505"}}>Health Passport</Text>
-        <P style={{color:"#888888", fontSize:18, fontWeight:"400",}}>Enter your details to get started.</P>
-        </View>
-        </View>
+      >
+        <View style={{ display: "flex", flexDirection: "column", gap: 40, paddingHorizontal: 24 }}>
+          {
+            (role == "user") && (
+              <>
+                <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                  <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <AppHeader
+                      goToScreen="/(auth)/signup"
+                      showBackArrow
+                    />
+                    <CircularProgress
+                      currentStep={currentStep}
+                      totalSteps={2}
+                    />
+                  </View>
+                  <View style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <Text style={{ fontSize: 32, fontWeight: "700", color: "#050505" }}>Health Passport</Text>
+                    <P style={{ color: "#888888", fontSize: 18, fontWeight: "400", }}>Enter your details to get started.</P>
+                  </View>
+                </View>
 
 
-        {
-        currentStep == 1 && (
-        <View style={{display:"flex", flexDirection:"column", gap:16}}>
-        <Input placeholder='First Name'/>
-        <Input placeholder='Last Name'/>
-        <Input placeholder='Email'/>
-        <TouchableOpacity
-          style={{
-            marginTop: 10,
-            height: 54,
-            borderWidth: 1,
-            borderColor: colors.gray1,
-            borderRadius: 8,
-            paddingHorizontal: 16,
-            justifyContent: 'center',
-            backgroundColor: colors.white,
-          }}
-          onPress={() => setIsGenderModalVisible(true)}
-        >
-          <Text style={{
-            fontSize: 16,
-            fontFamily: fonts.onestLight,
-            color: selectedGender ? colors.black : colors.gray1,
-          }}>
-            {selectedGender || 'Gender'}
-          </Text>
-        </TouchableOpacity>
-        
-        <GenderModal
-          isVisible={isGenderModalVisible}
-          onClose={() => setIsGenderModalVisible(false)}
-          onSelect={(gender) => setSelectedGender(gender)}
-          selectedGender={selectedGender}
-        />
-          <DateInput
-          label="Date of birth"
-          placeholder="YYYY-MM-DD"
-          value=''
-          onSelect={() => {}}
-          contStyle={{borderColor:"black"}}
-        />
-        <Input 
-        defaultCountryCode={countryCode}
-        onDefualtCodePress={() => {
-        setShow(true);
-        }}
-        type="phone" 
-        placeholder=''
-        autoCapitalize="none"
-        />
-        <View style={{display:"flex", flexDirection:"column", gap:8}}>
-        <H4>Basic Health Goal</H4>
-        <Input placeholder='e.g. track meds / detect falls'/>
-        </View>
-        <TouchableOpacity
-        onPress={() => setCurrentStep(2)}
-         style={{marginTop:12, backgroundColor:colors.primary, height:52, borderRadius:10, display:"flex", justifyContent:"center", alignItems:"center"}}>
-        <Text style={{fontSize:18, fontWeight:"700", color:"white", textAlign:"center"}}>Continue</Text>
-        </TouchableOpacity>
-        <View>
-        </View>
-        </View>
-            )
-        }
-        {
-            currentStep == 2 && (
-            <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-            <SelectInput
-               placeholder="Marital Status"
-               options={maritalStatus}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               contStyle={{borderColor:"black"}}
-               />
-            <Input 
-            contStyle={{}}
-            placeholder='Occupation'
-            inputStyle={{color:"black", backgroundColor:"white"}}
-            />
-            <SelectInput
-               placeholder="Educational Qualification"
-               options={educationalQualification}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               contStyle={{borderColor:"black"}}
-               />
-            <SelectInput
-               placeholder="Religion"
-               options={religion}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               />
-            <SelectInput
-               placeholder="Blood Group"
-               options={bloodGroup}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               />
-            <SelectInput
-               placeholder="Disability Type"
-               options={disabilityType}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               />
-            <SelectInput
-               placeholder="Assistance Required"
-               options={assistanceRequired}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               />
-            <SelectInput
-               placeholder="Language Preference"
-               options={languageReference}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-               />
-               <View style={{display:"flex", flexDirection:"column", gap:16}}>
-                <H4 style={{color:"#050505", }}>Select Role</H4>
-                <View style={{display:"flex", flexDirection:"row", gap: 20}}>
-                 {userRole.map((option) => (
-                    <TouchableOpacity
-                    key={option.value}
-                    onPress={() => setUserOption(option.value)}
-                    style={{display:"flex", flexDirection:"row", alignItems:"center", gap: 8}}
-                    >
-                      <View style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        borderColor: userOption === option.value ? "#0077FF" : "#A4A4A4",
-                        backgroundColor: userOption === option.value ? "#0077FF" : "white",
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}>
-                        {userOption === option.value && (
-                          <View style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: 4,
-                            backgroundColor: "white"
-                          }} />
-                        )}
+                {
+                  currentStep == 1 && (
+                    <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                      <Input placeholder='First Name' onChangeText={(text) => setFirstName(text)} value={firstName} />
+                      <Input placeholder='Last Name' onChangeText={(text) => setLastName(text)} value={lastName} />
+                      <TouchableOpacity
+                        style={{
+                          marginTop: 10,
+                          height: 54,
+                          borderWidth: 1,
+                          borderColor: colors.gray1,
+                          borderRadius: 8,
+                          paddingHorizontal: 16,
+                          justifyContent: 'center',
+                          backgroundColor: colors.white,
+                        }}
+                        onPress={() => setIsGenderModalVisible(true)}
+                      >
+                        <Text style={{
+                          fontSize: 16,
+                          fontFamily: fonts.onestLight,
+                          color: selectedGender ? colors.black : colors.gray1,
+                        }}>
+                          {selectedGender || 'Gender'}
+                        </Text>
+                      </TouchableOpacity>
+
+                      <GenderModal
+                        isVisible={isGenderModalVisible}
+                        onClose={() => setIsGenderModalVisible(false)}
+                        onSelect={(gender) => setSelectedGender(gender)}
+                        selectedGender={selectedGender}
+                      />
+                      <DateInput
+                        label="Date of birth"
+                        placeholder="YYYY-MM-DD"
+                        value={dateOfBirth}
+                        onSelect={(date) => setDateOfBirth(date)}
+                        contStyle={{ borderColor: "black" }}
+                      />
+                      <Input
+                        defaultCountryCode={countryCode}
+                        onDefualtCodePress={() => {
+                          setShow(true);
+                        }}
+                        value={phoneNumber}
+                        onChangeText={(text) => setPhoneNumber(text)}
+                        type="phone"
+                        placeholder=''
+                        autoCapitalize="none"
+                      />
+                      <View style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        <H4>Basic Health Goal</H4>
+                        <Input placeholder='e.g. track meds / detect falls' />
                       </View>
-                      <Text style={{
-                        fontSize: 16,
-                        color: "#050505",
-                        fontWeight: userOption === option.value ? "600" : "400"
-                      }}>
-                        {option.label}
-                      </Text>
-                    </TouchableOpacity>
-                ))}
-                </View>
-               </View>
-               <View style={{display:"flex", flexDirection:"column", gap:24, marginTop:36}}>
-                <View style={{width:"100%", height:0.5, backgroundColor:"#A4A4A4"}}/>
-                <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center"}}>
-                  <Checkbox 
-                  onPress={() => {}}
-                  checked={false}/>
-                  <P style={{color:"#888888", fontSize:16, fontWeight:"500"}}>I accept the terms & allow permissions</P>
-                </View>
-                <TouchableOpacity 
-                onPress={() => {
-                  setHasCompletedSetup(true);
-                  router.push("/(auth)/signup/AccountCreated");
-                }}
-                style={{backgroundColor:"#0077FF", width:"100%", height:52, borderRadius:10,display:"flex", justifyContent:"center", alignItems:"center"}}>
-                  <P style={{color:"#FFFFFF", fontWeight:"700", fontSize:18,}}>Create My Zenlyf Account</P>
-                </TouchableOpacity>
-               </View>
-            </View>
-                 
+                      <TouchableOpacity
+                        onPress={handleStepOneValidation}
+                        style={{ marginTop: 12, backgroundColor: colors.primary, height: 52, borderRadius: 10, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Text style={{ fontSize: 18, fontWeight: "700", color: "white", textAlign: "center" }}>Continue</Text>
+                      </TouchableOpacity>
+                      <View>
+                      </View>
+                    </View>
+                  )
+                }
+                {
+                  currentStep == 2 && (
+                    <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                       <SelectInput
+                         placeholder="Marital Status"
+                         options={maritalStatusOptions}
+                         multiSelect={false}
+                         selectedValues={maritalStatus ? [maritalStatus] : []}
+                         onSelect={(values) => setMaritalStatus(values[0] || "")}
+                         contStyle={{ borderColor: "black" }}
+                       />
+                      <Input
+                        contStyle={{}}
+                        placeholder='Occupation'
+                        value={occupation}
+                        onChangeText={(text) => setOccupation(text)}
+                        inputStyle={{ color: "black", backgroundColor: "white" }}
+                      />
+                       <SelectInput
+                         placeholder="Educational Qualification"
+                         options={educationalQualificationOptions}
+                         multiSelect={false}
+                         selectedValues={educationalQualification ? [educationalQualification] : []}
+                         onSelect={(values) => setEducationalQualification(values[0] || "")}
+                         contStyle={{ borderColor: "black" }}
+                       />
+                      <SelectInput
+                        placeholder="Religion"
+                        options={religionOptions}
+                        multiSelect={false}
+                        selectedValues={religion ? [religion] : []}
+                        onSelect={(values) => setReligion(values[0] || "")}
+                      />
+                      <SelectInput
+                        placeholder="Blood Group"
+                        options={bloodGroupOptions}
+                        multiSelect={false}
+                        selectedValues={bloodGroup ? [bloodGroup] : []}
+                        onSelect={(values) => setBloodGroup(values[0] || "")}
+                      />
+                      <SelectInput
+                        placeholder="Disability Type"
+                        options={disabilityTypeOptions}
+                        multiSelect={false}
+                        selectedValues={disabilityType ? [disabilityType] : []}
+                        onSelect={(values) => setDisabilityType(values[0] || "")}
+                      />
+                      <SelectInput
+                        placeholder="Assistance Required"
+                        options={assistanceRequiredOptions}
+                        multiSelect={false}
+                        selectedValues={assistanceRequired ? [assistanceRequired] : []}
+                        onSelect={(values) => setAssistanceRequired(values[0] || "")}
+                      />
+                      <SelectInput
+                        placeholder="Language Preference"
+                        options={languageReferenceOptions}
+                        multiSelect={false}
+                        selectedValues={languagePreference ? [languagePreference] : []}
+                        onSelect={(values) => setLanguagePreference(values[0] || "")}
+                      />
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        <H4 style={{ color: "#050505", }}>Select Role</H4>
+                        <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+                          {userRole.map((option) => (
+                            <TouchableOpacity
+                              key={option.value}
+                              onPress={() => setUserOption(option.value)}
+                              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8 }}
+                            >
+                              <View style={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 10,
+                                borderWidth: 2,
+                                borderColor: userOption === option.value ? "#0077FF" : "#A4A4A4",
+                                backgroundColor: userOption === option.value ? "#0077FF" : "white",
+                                justifyContent: "center",
+                                alignItems: "center"
+                              }}>
+                                {userOption === option.value && (
+                                  <View style={{
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: 4,
+                                    backgroundColor: "white"
+                                  }} />
+                                )}
+                              </View>
+                              <Text style={{
+                                fontSize: 16,
+                                color: "#050505",
+                                fontWeight: userOption === option.value ? "600" : "400"
+                              }}>
+                                {option.label}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+                      <View style={{ display: "flex", flexDirection: "column", gap: 24, marginTop: 36 }}>
+                        <View style={{ width: "100%", height: 0.5, backgroundColor: "#A4A4A4" }} />
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                          <Checkbox
+                            onPress={() => { }}
+                            checked={false} />
+                          <P style={{ color: "#888888", fontSize: 16, fontWeight: "500" }}>I accept the terms & allow permissions</P>
+                        </View>
+                        <TouchableOpacity
+                          onPress={handleCreateUser}
+                          disabled={loading}
+                          style={{ 
+                            backgroundColor: loading ? "#A4A4A4" : "#0077FF", 
+                            width: "100%", 
+                            height: 52, 
+                            borderRadius: 10, 
+                            display: "flex", 
+                            justifyContent: "center", 
+                            alignItems: "center" 
+                          }}>
+                          <P style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 18, }}>
+                            {loading ? "Creating Account..." : "Create My Zenlyf Account"}
+                          </P>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+
+                  )
+                }
+              </>
             )
-        }
-        </>
-          )
-        }
-
-        {
-          role == "doctor" && (
-            <>
-            {
-        currentStep == 1 && (
-          <>
-
-      <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Basic Information"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-       
-        </View>
-          
-        <View style={{display:"flex", flexDirection:"column", gap:16}}>
-        <Input placeholder='First Name'/>
-        <Input placeholder='Last Name'/>
-        <Input placeholder='Email'/>
-        <TouchableOpacity
-          style={{
-            marginTop: 10,
-            height: 54,
-            borderWidth: 1,
-            borderColor: colors.gray1,
-            borderRadius: 8,
-            paddingHorizontal: 16,
-            justifyContent: 'center',
-            backgroundColor: colors.white,
-          }}
-          onPress={() => setIsGenderModalVisible(true)}
-        >
-          <Text style={{
-            fontSize: 16,
-            fontFamily: fonts.onestLight,
-            color: selectedGender ? colors.black : colors.gray1,
-          }}>
-            {selectedGender || 'Gender'}
-          </Text>
-        </TouchableOpacity>
-        
-        <GenderModal
-          isVisible={isGenderModalVisible}
-          onClose={() => setIsGenderModalVisible(false)}
-          onSelect={(gender) => setSelectedGender(gender)}
-          selectedGender={selectedGender}
-        />
-          <DateInput
-          label="Date of birth"
-          placeholder="YYYY-MM-DD"
-          value=''
-          onSelect={() => {}}
-        />
-        <Input 
-        defaultCountryCode={countryCode}
-        onDefualtCodePress={() => {
-        setShow(true);
-        }}
-        type="phone" 
-        placeholder=''
-        autoCapitalize="none"
-        />
-         <SelectInput
-               placeholder="Marital Status"
-               options={maritalStatus}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-            />
-           <SelectInput
-               placeholder="Language Preference"
-               options={languageReference}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-              />
-        <TouchableOpacity
-        onPress={() => setCurrentStep(2)}
-         style={{marginTop:12, backgroundColor:colors.primary, height:52, borderRadius:10, display:"flex", justifyContent:"center", alignItems:"center"}}>
-        <Text style={{fontSize:18, fontWeight:"700", color:"white", textAlign:"center"}}>Continue</Text>
-        </TouchableOpacity>
-        <View>
-        </View>
-        </View>
-        </>
-        )
-        }
-          {
-           currentStep == 2 && (
-            <>
-          <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Professional Details"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-        
-        </View>
-             <View style={{display:"flex", flexDirection:"column", gap:16}}>
-               {/* Specialization Section */}
-               <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                 <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Specialization</Text>
-                 
-                 <TouchableOpacity
-                   style={{
-                     height: 54,
-                     borderWidth: 1,
-                     borderColor: colors.gray1,
-                     borderRadius: 8,
-                     paddingHorizontal: 16,
-                     justifyContent: 'space-between',
-                     alignItems: 'center',
-                     backgroundColor: colors.white,
-                     flexDirection: 'row',
-                   }}
-                   onPress={() => setIsSpecializationModalVisible(true)}
-                 >
-                   <Text style={{
-                     fontSize: 16,
-                     fontFamily: fonts.onestLight,
-                     color: selectedSpecialization ? colors.black : colors.gray1,
-                   }}>
-                     {selectedSpecialization || 'General Practitioner'}
-                   </Text>
-                   <Text style={{
-                     fontSize: 16,
-                     color: colors.black,
-                   }}>
-                     ▼
-                   </Text>
-                 </TouchableOpacity>
-                 
-                 <SpecializationModal
-                   isVisible={isSpecializationModalVisible}
-                   onClose={() => setIsSpecializationModalVisible(false)}
-                   onSelect={(specialization) => setSelectedSpecialization(specialization)}
-                   selectedSpecialization={selectedSpecialization}
-                 />
-               </View>
-               
-               {/* Place of Work Section */}
-               <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                 <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Place of Work</Text>
-                 
-                 <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                   <Input 
-                     placeholder="Hospital/Clinic Name"
-                     value={hospitalName}
-                     onChangeText={setHospitalName}
-                   />
-                   
-                   <Input 
-                     placeholder="Address"
-                     value={hospitalAddress}
-                     onChangeText={setHospitalAddress}
-                   />
-                   
-                   <Input 
-                     placeholder="Contact Number of Facility"
-                     value={facilityContact}
-                     onChangeText={setFacilityContact}
-                   />
-                 </View>
-               </View>
-               
-               {/* Next Button */}
-               <TouchableOpacity
-                 onPress={() => {
-                   setCurrentStep(3);
-                   console.log('Next pressed for doctor step 2');
-                 }}
-                 style={{
-                   marginTop: 12,
-                   backgroundColor: colors.primary,
-                   height: 52,
-                   borderRadius: 10,
-                   display: "flex",
-                   justifyContent: "center",
-                   alignItems: "center",
-                 }}
-               >
-                 <Text style={{
-                   fontSize: 18,
-                   fontWeight: "700",
-                   color: "white",
-                   textAlign: "center",
-                 }}>
-                   Next
-                 </Text>
-               </TouchableOpacity>
-             </View>
-             </>
-           )
           }
-          {
-             currentStep == 3 && (
-               <>
-        <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Upload Proof of Profession"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-       
-        </View>
-          
-                 <View style={{display:"flex", flexDirection:"column", gap:16}}>
-                   {/* Hospital/Clinic ID Upload Section */}
-                   <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                     <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Photo of Hospital/Clinic ID or Work Badge</Text>
-                     
-                     <TouchableOpacity
-                       style={{
-                         height: 80,
-                         borderWidth: 1,
-                         borderColor: colors.gray1,
-                         borderRadius: 12,
-                         backgroundColor: colors.white,
-                         paddingHorizontal: 16,
-                         flexDirection: 'row',
-                         alignItems: 'center',
-                         gap: 12,
-                       }}
-                       onPress={() => pickImage('hospitalId')}
-                     >
-                       {hospitalIdImage ? (
-                         <View style={{
-                           width: 48,
-                           height: 48,
-                           borderRadius: 8,
-                           overflow: 'hidden',
-                         }}>
-                           <Image 
-                             source={{ uri: hospitalIdImage }} 
-                             style={{
-                               width: '100%',
-                               height: '100%',
-                             }}
-                             resizeMode="cover"
-                           />
-                         </View>
-                       ) : (
-                         <View style={{
-                           width: 48,
-                           height: 48,
-                           backgroundColor: colors.primary + '20',
-                           borderRadius: 8,
-                           justifyContent: 'center',
-                           alignItems: 'center',
-                         }}>
-                           <Text style={{
-                             fontSize: 24,
-                             color: colors.primary,
-                           }}>
-                             🏔️
-                           </Text>
-                         </View>
-                       )}
-                       <Text style={{
-                         fontSize: 16,
-                         fontFamily: fonts.onestLight,
-                         color: hospitalIdImage ? colors.black : colors.gray1,
-                         flex: 1,
-                       }}>
-                         {hospitalIdImage ? 'Hospital ID uploaded' : 'Upload'}
-                       </Text>
-                     </TouchableOpacity>
-                   </View>
-                   
-                   {/* Optional Referral Letter Upload Section */}
-                   <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                     <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Optional: Referral Letter or Certificate</Text>
-                     
-                     <TouchableOpacity
-                       style={{
-                         height: 80,
-                         borderWidth: 1,
-                         borderColor: colors.gray1,
-                         borderRadius: 12,
-                         backgroundColor: colors.white,
-                         paddingHorizontal: 16,
-                         flexDirection: 'row',
-                         alignItems: 'center',
-                         gap: 12,
-                       }}
-                       onPress={() => pickImage('referralLetter')}
-                     >
-                       {referralLetterImage ? (
-                         <View style={{
-                           width: 48,
-                           height: 48,
-                           borderRadius: 8,
-                           overflow: 'hidden',
-                         }}>
-                           <Image 
-                             source={{ uri: referralLetterImage }} 
-                             style={{
-                               width: '100%',
-                               height: '100%',
-                             }}
-                             resizeMode="cover"
-                           />
-                         </View>
-                       ) : (
-                         <View style={{
-                           width: 48,
-                           height: 48,
-                           backgroundColor: colors.primary + '20',
-                           borderRadius: 8,
-                           justifyContent: 'center',
-                           alignItems: 'center',
-                         }}>
-                           <Text style={{
-                             fontSize: 24,
-                             color: colors.primary,
-                           }}>
-                             🏔️
-                           </Text>
-                         </View>
-                       )}
-                       <Text style={{
-                         fontSize: 16,
-                         fontFamily: fonts.onestLight,
-                         color: referralLetterImage ? colors.black : colors.gray1,
-                         flex: 1,
-                       }}>
-                         {referralLetterImage ? 'Referral letter uploaded' : 'Upload'}
-                       </Text>
-                     </TouchableOpacity>
-                   </View>
-                   
-                   {/* Submit for Verification Button */}
-                   <TouchableOpacity
-                     style={{
-                       marginTop: 20,
-                       backgroundColor: colors.primary,
-                       height: 52,
-                       borderRadius: 10,
-                       display: "flex",
-                       justifyContent: "center",
-                       alignItems: "center",
-                     }}
-                     onPress={() => {
-                       // Handle submit for verification
-                       console.log('Submit for verification pressed');
-                       setHasCompletedSetup(true);
-                       router.push('/(doctor-tabs)');
-                     }}
-                   >
-                     <Text style={{
-                       fontSize: 16,
-                       fontWeight: "700",
-                       color: colors.white,
-                     }}>
-                       Submit for Verification
-                     </Text>
-                   </TouchableOpacity>
-                 </View>
-               </>
-             )
-           }
-
-            </>
-          )
-        }
-
-        {
-          role == "caregiver" && (
-            <>
-        {
-        currentStep == 1 && (
-          <>
-        <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Basic Information"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-       
-        </View>
-        <View style={{display:"flex", flexDirection:"column", gap:16}}>
-        <Input placeholder='First Name'/>
-        <Input placeholder='Last Name'/>
-        <Input placeholder='Email'/>
-        <TouchableOpacity
-          style={{
-            marginTop: 10,
-            height: 54,
-            borderWidth: 1,
-            borderColor: colors.gray1,
-            borderRadius: 8,
-            paddingHorizontal: 16,
-            justifyContent: 'center',
-            backgroundColor: colors.white,
-          }}
-          onPress={() => setIsGenderModalVisible(true)}
-        >
-          <Text style={{
-            fontSize: 16,
-            fontFamily: fonts.onestLight,
-            color: selectedGender ? colors.black : colors.gray1,
-          }}>
-            {selectedGender || 'Gender'}
-          </Text>
-        </TouchableOpacity>
-        
-        <GenderModal
-          isVisible={isGenderModalVisible}
-          onClose={() => setIsGenderModalVisible(false)}
-          onSelect={(gender) => setSelectedGender(gender)}
-          selectedGender={selectedGender}
-        />
-          <DateInput
-          label="Date of birth"
-          placeholder="YYYY-MM-DD"
-          value=''
-          onSelect={() => {}}
-        />
-        <Input 
-        defaultCountryCode={countryCode}
-        onDefualtCodePress={() => {
-        setShow(true);
-        }}
-        type="phone" 
-        placeholder=''
-        autoCapitalize="none"
-        />
-         <SelectInput
-               placeholder="Marital Status"
-               options={maritalStatus}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-            />
-           <SelectInput
-               placeholder="Language Preference"
-               options={languageReference}
-               multiSelect={false}
-               selectedValues={[]}
-               onSelect={() => {}}
-              />
-        <TouchableOpacity
-        onPress={() => setCurrentStep(2)}
-         style={{marginTop:12, backgroundColor:colors.primary, height:52, borderRadius:10, display:"flex", justifyContent:"center", alignItems:"center"}}>
-        <Text style={{fontSize:18, fontWeight:"700", color:"white", textAlign:"center"}}>Continue</Text>
-        </TouchableOpacity>
-        <View>
-        </View>
-        </View>
-        </>
-        )
-        }
 
           {
-           currentStep == 2 && (
-            <>
-            <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Professional Details"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-       
-        </View>
-           
-             <View style={{display:"flex", flexDirection:"column", gap:16}}>
-               {/* Role Type Section */}
-               <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                 <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Role Type</Text>
-                 
-                 {/* Role Type Radio Buttons */}
-                 <View style={{display:"flex", flexDirection:"row", gap:12}}>
-                   <TouchableOpacity
-                     style={{
-                       flex: 1,
-                       paddingVertical: 16,
-                       paddingHorizontal: 20,
-                       borderRadius: 12,
-                       borderWidth: 1,
-                       borderColor: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
-                       backgroundColor: selectedRoleType === 'professional' ? colors.primary + '10' : colors.white,
-                       alignItems: 'center',
-                       justifyContent: 'center',
-                     }}
-                     onPress={() => setSelectedRoleType('professional')}
-                   >
-                     <View style={{
-                       flexDirection: 'row',
-                       alignItems: 'center',
-                       gap: 8,
-                     }}>
-                       <View style={{
-                         width: 20,
-                         height: 20,
-                         borderRadius: 10,
-                         borderWidth: 2,
-                         borderColor: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
-                         backgroundColor: selectedRoleType === 'professional' ? colors.primary : 'transparent',
-                         justifyContent: 'center',
-                         alignItems: 'center',
-                       }}>
-                         {selectedRoleType === 'professional' && (
-                           <View style={{
-                             width: 8,
-                             height: 8,
-                             borderRadius: 4,
-                             backgroundColor: colors.white,
-                           }} />
-                         )}
-                       </View>
-                       <Text style={{
-                         fontSize: 16,
-                         fontWeight: "500",
-                         color: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
-                       }}>
-                         Professional
-                       </Text>
-                     </View>
-                   </TouchableOpacity>
-                   
-                   <TouchableOpacity
-                     style={{
-                       flex: 1,
-                       paddingVertical: 16,
-                       paddingHorizontal: 20,
-                       borderRadius: 12,
-                       borderWidth: 1,
-                       borderColor: selectedRoleType === 'family' ? colors.primary : colors.gray1,
-                       backgroundColor: selectedRoleType === 'family' ? colors.primary + '10' : colors.white,
-                       alignItems: 'center',
-                       justifyContent: 'center',
-                     }}
-                     onPress={() => setSelectedRoleType('family')}
-                   >
-                     <View style={{
-                       flexDirection: 'row',
-                       alignItems: 'center',
-                       gap: 8,
-                     }}>
-                       <View style={{
-                         width: 20,
-                         height: 20,
-                         borderRadius: 10,
-                         borderWidth: 2,
-                         borderColor: selectedRoleType === 'family' ? colors.primary : colors.gray1,
-                         backgroundColor: selectedRoleType === 'family' ? colors.primary : 'transparent',
-                         justifyContent: 'center',
-                         alignItems: 'center',
-                       }}>
-                         {selectedRoleType === 'family' && (
-                           <View style={{
-                             width: 8,
-                             height: 8,
-                             borderRadius: 4,
-                             backgroundColor: colors.white,
-                           }} />
-                         )}
-                       </View>
-                       <Text style={{
-                         fontSize: 16,
-                         fontWeight: "500",
-                         color: selectedRoleType === 'family' ? colors.primary : colors.gray1,
-                       }}>
-                         Family Member
-                       </Text>
-                     </View>
-                   </TouchableOpacity>
-                 </View>
-               </View>
-               
-               {/* Input Fields */}
-               <View style={{display:"flex", flexDirection:"column", gap:16}}>
-                 <Input 
-                   placeholder='Organization Name'
-                   value={organizationName}
-                   onChangeText={setOrganizationName}
-                 />
-                 <Input 
-                   placeholder='Supervisor or Facility Contact info'
-                   value={supervisorContact}
-                   onChangeText={setSupervisorContact}
-                 />
-               </View>
-               
-               {/* Next Button */}
-               <TouchableOpacity
-                 onPress={() => {
-                  setCurrentStep(3);
-                   // Handle next step or form submission
-                   console.log('Next pressed for caregiver step 2');
-                 }}
-                 style={{
-                   marginTop: 12,
-                   backgroundColor: colors.primary,
-                   height: 52,
-                   borderRadius: 10,
-                   display: "flex",
-                   justifyContent: "center",
-                   alignItems: "center",
-                 }}
-               >
-                 <Text style={{
-                   fontSize: 18,
-                   fontWeight: "700",
-                   color: "white",
-                   textAlign: "center",
-                 }}>
-                   Next
-                 </Text>
-               </TouchableOpacity>
-             </View>
-             </>
-           )
-         }
-        {
-           currentStep == 3 && (
-            <>
-          <View style={{display:"flex", flexDirection:'column', gap:16,}}>
-        <View style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-        <AppHeader
-        goToScreen="/(auth)/signup"
-        text="Upload Caregiver Verification"
-        showBackArrow
-        />
-        <CircularProgress
-            currentStep={currentStep}
-            totalSteps={3}
-          />
-        </View>
-       
-        </View>
+            role == "doctor" && (
+              <>
+                {
+                  currentStep == 1 && (
+                    <>
 
-             <View style={{display:"flex", flexDirection:"column", gap:16}}>
-               {/* Uploads Section */}
-               <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                 <Text style={{fontSize:18, fontWeight:"700", color:"#050505"}}>Uploads:</Text>
-                 
-                 {/* Upload Fields */}
-                 <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                   {/* Photo of ID Badge or Certificate */}
-                   <TouchableOpacity
-                     style={{
-                       height: 80,
-                       borderWidth: 1,
-                       borderColor: colors.gray1,
-                       borderRadius: 12,
-                       backgroundColor: colors.white,
-                       paddingHorizontal: 16,
-                       flexDirection: 'row',
-                       alignItems: 'center',
-                       gap: 12,
-                     }}
-                     onPress={() => pickImage('idBadge')}
-                   >
-                     {idBadgeImage ? (
-                       <View style={{
-                         width: 48,
-                         height: 48,
-                         borderRadius: 8,
-                         overflow: 'hidden',
-                       }}>
-                         <Image 
-                           source={{ uri: idBadgeImage }} 
-                           style={{
-                             width: '100%',
-                             height: '100%',
-                           }}
-                           resizeMode="cover"
-                         />
-                       </View>
-                     ) : (
-                       <View style={{
-                         width: 48,
-                         height: 48,
-                         backgroundColor: colors.primary + '20',
-                         borderRadius: 8,
-                         justifyContent: 'center',
-                         alignItems: 'center',
-                       }}>
-                         <Image 
-                           source={require("../../../assets/images/upload.png")} 
-                           style={{
-                             width: 24,
-                             height: 24,
-                           }}
-                           resizeMode="cover"
-                         />
-                       </View>
-                     )}
-                     <Text style={{
-                       fontSize: 16,
-                       fontFamily: fonts.onestLight,
-                       color: idBadgeImage ? colors.black : colors.gray1,
-                       flex: 1,
-                     }}>
-                       {idBadgeImage ? 'ID Badge/Certificate uploaded' : 'Photo of ID Badge or Certificate'}
-                     </Text>
-                   </TouchableOpacity>
-                   
-                   {/* Photo of ID Organization ID */}
-                   <TouchableOpacity
-                     style={{
-                       height: 80,
-                       borderWidth: 1,
-                       borderColor: colors.gray1,
-                       borderRadius: 12,
-                       backgroundColor: colors.white,
-                       paddingHorizontal: 16,
-                       flexDirection: 'row',
-                       alignItems: 'center',
-                       gap: 12,
-                     }}
-                     onPress={() => pickImage('organizationId')}
-                   >
-                     {organizationIdImage ? (
-                       <View style={{
-                         width: 48,
-                         height: 48,
-                         borderRadius: 8,
-                         overflow: 'hidden',
-                       }}>
-                         <Image 
-                           source={{ uri: organizationIdImage }} 
-                           style={{
-                             width: '100%',
-                             height: '100%',
-                           }}
-                           resizeMode="cover"
-                         />
-                       </View>
-                     ) : (
-                       <View style={{
-                         width: 48,
-                         height: 48,
-                         backgroundColor: colors.primary + '20',
-                         borderRadius: 8,
-                         justifyContent: 'center',
-                         alignItems: 'center',
-                       }}>
-                        <Image 
-                           source={require("../../../assets/images/upload.png")} 
-                           style={{
-                             width: 24,
-                             height: 24,
-                           }}
-                           resizeMode="cover"
-                         />
-                       </View>
-                     )}
-                     <Text style={{
-                       fontSize: 16,
-                       fontFamily: fonts.onestLight,
-                       color: organizationIdImage ? colors.black : colors.gray1,
-                       flex: 1,
-                     }}>
-                       {organizationIdImage ? 'Organization ID uploaded' : 'Photo of ID Organization ID'}
-                     </Text>
-                   </TouchableOpacity>
-                 </View>
-               </View>
-               
-               {/* Doctor's Zenlyf Code Input */}
-               <View style={{display:"flex", flexDirection:"column", gap:12}}>
-                 <Input 
-                   placeholder="Add Doctor's Zenlyf Code"
-                   value={doctorsCode}
-                   onChangeText={setDoctorsCode}
-                 />
-               </View>
-               
-               {/* Independent Caregiver Checkbox */}
-               <View style={{display:"flex", flexDirection:"row", alignItems:"center", gap:12}}>
-                 <TouchableOpacity
-                   style={{
-                     width: 24,
-                     height: 24,
-                     borderRadius: 12,
-                     borderWidth: 2,
-                     borderColor: isIndependentCaregiver ? colors.success : colors.gray1,
-                     backgroundColor: isIndependentCaregiver ? colors.success : 'transparent',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                   }}
-                   onPress={() => setIsIndependentCaregiver(!isIndependentCaregiver)}
-                 >
-                   {isIndependentCaregiver && (
-                     <Text style={{
-                       fontSize: 16,
-                       color: colors.white,
-                       fontWeight: 'bold',
-                     }}>
-                       ✓
-                     </Text>
-                   )}
-                 </TouchableOpacity>
-                 <Text style={{
-                   fontSize: 16,
-                   fontFamily: fonts.onestMedium,
-                   color: colors.black,
-                   flex: 1,
-                 }}>
-                   I am an independent Caregiver
-                 </Text>
-               </View>
-               
-               {/* Action Buttons */}
-               <View style={{display:"flex", flexDirection:"column", gap:12, marginTop: 20}}>
-                 {/* Upload Button */}
-                 <TouchableOpacity
-                   style={{
-                     height: 52,
-                     borderWidth: 1,
-                     borderColor: colors.primary,
-                     borderRadius: 10,
-                     backgroundColor: colors.primary + '10',
-                     flexDirection: 'row',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                     gap: 8,
-                   }}
-                   onPress={pickDocument}
-                 >
-                   <Text style={{
-                     fontSize: 18,
-                     color: colors.primary,
-                     fontWeight: '600',
-                   }}>
-                     ↑
-                   </Text>
-                   <Text style={{
-                     fontSize: 16,
-                     fontWeight: "600",
-                     color: colors.primary,
-                   }}>
-                     Upload
-                   </Text>
-                 </TouchableOpacity>
-                 
-                 {/* Display Uploaded Documents */}
-                 {uploadedDocuments.length > 0 && (
-                   <View style={{display:"flex", flexDirection:"column", gap:8}}>
-                     <Text style={{
-                       fontSize: 14,
-                       fontFamily: fonts.onestMedium,
-                       color: colors.black,
-                     }}>
-                       Uploaded Documents ({uploadedDocuments.length}):
-                     </Text>
-                     {uploadedDocuments.map((doc, index) => (
-                       <View key={index} style={{
-                         flexDirection: 'row',
-                         alignItems: 'center',
-                         backgroundColor: '#F5F5F5',
-                         padding: 12,
-                         borderRadius: 8,
-                         gap: 8,
-                       }}>
-                         <Text style={{
-                           fontSize: 12,
-                           color: colors.primary,
-                         }}>
-                           📄
-                         </Text>
-                         <Text style={{
-                           fontSize: 14,
-                           fontFamily: fonts.onestMedium,
-                           color: colors.black,
-                           flex: 1,
-                         }}>
-                           {doc.name}
-                         </Text>
-                         <TouchableOpacity
-                           onPress={() => {
-                             setUploadedDocuments(prev => prev.filter((_, i) => i !== index));
-                           }}
-                           style={{
-                             padding: 4,
-                           }}
-                         >
-                           <Text style={{
-                             fontSize: 16,
-                             color: colors.red,
-                             fontWeight: 'bold',
-                           }}>
-                             ×
-                           </Text>
-                         </TouchableOpacity>
-                       </View>
-                     ))}
-                   </View>
-                 )}
-                 
-                 {/* Submit Button */}
-                 <TouchableOpacity
-                   style={{
-                     height: 52,
-                     backgroundColor: colors.primary,
-                     borderRadius: 10,
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                   }}
-                                        onPress={() => {
-                       // Handle submit for manual review
-                       console.log('Submit for Manual Review pressed');
-                       setHasCompletedSetup(true);
-                       router.push('/(auth)/signup/reviewingDocument');
-                     }}
-                 >
-                   <Text style={{
-                     fontSize: 16,
-                     fontWeight: "700",
-                     color: colors.white,
-                   }}>
-                     Submit for Manual Review
-                   </Text>
-                 </TouchableOpacity>
-               </View>
-             </View>
-             </>
-           )
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Basic Information"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        <Input placeholder='First Name' />
+                        <Input placeholder='Last Name' />
+                        <Input placeholder='Email' />
+                        <TouchableOpacity
+                          style={{
+                            marginTop: 10,
+                            height: 54,
+                            borderWidth: 1,
+                            borderColor: colors.gray1,
+                            borderRadius: 8,
+                            paddingHorizontal: 16,
+                            justifyContent: 'center',
+                            backgroundColor: colors.white,
+                          }}
+                          onPress={() => setIsGenderModalVisible(true)}
+                        >
+                          <Text style={{
+                            fontSize: 16,
+                            fontFamily: fonts.onestLight,
+                            color: selectedGender ? colors.black : colors.gray1,
+                          }}>
+                            {selectedGender || 'Gender'}
+                          </Text>
+                        </TouchableOpacity>
+
+                        <GenderModal
+                          isVisible={isGenderModalVisible}
+                          onClose={() => setIsGenderModalVisible(false)}
+                          onSelect={(gender) => setSelectedGender(gender)}
+                          selectedGender={selectedGender}
+                        />
+                        <DateInput
+                          label="Date of birth"
+                          placeholder="YYYY-MM-DD"
+                          value={dateOfBirth}
+                          onSelect={(date) => setDateOfBirth(date)}
+                        />
+                        <Input
+                          defaultCountryCode={countryCode}
+                          onDefualtCodePress={() => {
+                            setShow(true);
+                          }}
+                          type="phone"
+                          placeholder=''
+                          autoCapitalize="none"
+                        />
+                        <SelectInput
+                          placeholder="Marital Status"
+                           options={maritalStatusOptions}
+                           multiSelect={false}
+                           selectedValues={maritalStatus ? [maritalStatus] : []}
+                           onSelect={(values) => setMaritalStatus(values[0] || "")}
+                        />
+                        <SelectInput
+                          placeholder="Language Preference"
+                          options={languageReferenceOptions}
+                          multiSelect={false}
+                          selectedValues={languagePreference ? [languagePreference] : []}
+                          onSelect={(values) => setLanguagePreference(values[0] || "")}
+                        />
+                        <TouchableOpacity
+                          onPress={() => setCurrentStep(2)}
+                          style={{ marginTop: 12, backgroundColor: colors.primary, height: 52, borderRadius: 10, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "white", textAlign: "center" }}>Continue</Text>
+                        </TouchableOpacity>
+                        <View>
+                        </View>
+                      </View>
+                    </>
+                  )
+                }
+                {
+                  currentStep == 2 && (
+                    <>
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Professional Details"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        {/* Specialization Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Specialization</Text>
+
+                          <TouchableOpacity
+                            style={{
+                              height: 54,
+                              borderWidth: 1,
+                              borderColor: colors.gray1,
+                              borderRadius: 8,
+                              paddingHorizontal: 16,
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              backgroundColor: colors.white,
+                              flexDirection: 'row',
+                            }}
+                            onPress={() => setIsSpecializationModalVisible(true)}
+                          >
+                            <Text style={{
+                              fontSize: 16,
+                              fontFamily: fonts.onestLight,
+                              color: selectedSpecialization ? colors.black : colors.gray1,
+                            }}>
+                              {selectedSpecialization || 'General Practitioner'}
+                            </Text>
+                            <Text style={{
+                              fontSize: 16,
+                              color: colors.black,
+                            }}>
+                              ▼
+                            </Text>
+                          </TouchableOpacity>
+
+                          <SpecializationModal
+                            isVisible={isSpecializationModalVisible}
+                            onClose={() => setIsSpecializationModalVisible(false)}
+                            onSelect={(specialization) => setSelectedSpecialization(specialization)}
+                            selectedSpecialization={selectedSpecialization}
+                          />
+                        </View>
+
+                        {/* Place of Work Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Place of Work</Text>
+
+                          <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            <Input
+                              placeholder="Hospital/Clinic Name"
+                              value={hospitalName}
+                              onChangeText={setHospitalName}
+                            />
+
+                            <Input
+                              placeholder="Address"
+                              value={hospitalAddress}
+                              onChangeText={setHospitalAddress}
+                            />
+
+                            <Input
+                              placeholder="Contact Number of Facility"
+                              value={facilityContact}
+                              onChangeText={setFacilityContact}
+                            />
+                          </View>
+                        </View>
+
+                        {/* Next Button */}
+                        <TouchableOpacity
+                          onPress={() => {
+                            setCurrentStep(3);
+                            console.log('Next pressed for doctor step 2');
+                          }}
+                          style={{
+                            marginTop: 12,
+                            backgroundColor: colors.primary,
+                            height: 52,
+                            borderRadius: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={{
+                            fontSize: 18,
+                            fontWeight: "700",
+                            color: "white",
+                            textAlign: "center",
+                          }}>
+                            Next
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )
+                }
+                {
+                  currentStep == 3 && (
+                    <>
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Upload Proof of Profession"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        {/* Hospital/Clinic ID Upload Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Photo of Hospital/Clinic ID or Work Badge</Text>
+
+                          <TouchableOpacity
+                            style={{
+                              height: 80,
+                              borderWidth: 1,
+                              borderColor: colors.gray1,
+                              borderRadius: 12,
+                              backgroundColor: colors.white,
+                              paddingHorizontal: 16,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: 12,
+                            }}
+                            onPress={() => pickImage('hospitalId')}
+                          >
+                            {hospitalIdImage ? (
+                              <View style={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: 8,
+                                overflow: 'hidden',
+                              }}>
+                                <Image
+                                  source={{ uri: hospitalIdImage }}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                  }}
+                                  resizeMode="cover"
+                                />
+                              </View>
+                            ) : (
+                              <View style={{
+                                width: 48,
+                                height: 48,
+                                backgroundColor: colors.primary + '20',
+                                borderRadius: 8,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}>
+                                <Text style={{
+                                  fontSize: 24,
+                                  color: colors.primary,
+                                }}>
+                                  🏔️
+                                </Text>
+                              </View>
+                            )}
+                            <Text style={{
+                              fontSize: 16,
+                              fontFamily: fonts.onestLight,
+                              color: hospitalIdImage ? colors.black : colors.gray1,
+                              flex: 1,
+                            }}>
+                              {hospitalIdImage ? 'Hospital ID uploaded' : 'Upload'}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        {/* Optional Referral Letter Upload Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Optional: Referral Letter or Certificate</Text>
+
+                          <TouchableOpacity
+                            style={{
+                              height: 80,
+                              borderWidth: 1,
+                              borderColor: colors.gray1,
+                              borderRadius: 12,
+                              backgroundColor: colors.white,
+                              paddingHorizontal: 16,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: 12,
+                            }}
+                            onPress={() => pickImage('referralLetter')}
+                          >
+                            {referralLetterImage ? (
+                              <View style={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: 8,
+                                overflow: 'hidden',
+                              }}>
+                                <Image
+                                  source={{ uri: referralLetterImage }}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                  }}
+                                  resizeMode="cover"
+                                />
+                              </View>
+                            ) : (
+                              <View style={{
+                                width: 48,
+                                height: 48,
+                                backgroundColor: colors.primary + '20',
+                                borderRadius: 8,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}>
+                                <Text style={{
+                                  fontSize: 24,
+                                  color: colors.primary,
+                                }}>
+                                  🏔️
+                                </Text>
+                              </View>
+                            )}
+                            <Text style={{
+                              fontSize: 16,
+                              fontFamily: fonts.onestLight,
+                              color: referralLetterImage ? colors.black : colors.gray1,
+                              flex: 1,
+                            }}>
+                              {referralLetterImage ? 'Referral letter uploaded' : 'Upload'}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        {/* Submit for Verification Button */}
+                        <TouchableOpacity
+                          style={{
+                            marginTop: 20,
+                            backgroundColor: colors.primary,
+                            height: 52,
+                            borderRadius: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onPress={() => {
+                            // Handle submit for verification
+                            const formattedDateOfBirth = getFormattedDateOfBirth();
+                            console.log('Submit for verification pressed');
+                            console.log('Date of birth for backend:', formattedDateOfBirth);
+                            setHasCompletedSetup(true);
+                            router.push('/(doctor-tabs)');
+                          }}
+                        >
+                          <Text style={{
+                            fontSize: 16,
+                            fontWeight: "700",
+                            color: colors.white,
+                          }}>
+                            Submit for Verification
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )
+                }
+
+              </>
+            )
           }
-           </>
-          )
-        }
+
+          {
+            role == "caregiver" && (
+              <>
+                {
+                  currentStep == 1 && (
+                    <>
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Basic Information"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        <Input placeholder='First Name' />
+                        <Input placeholder='Last Name' />
+                        <Input placeholder='Email' />
+                        <TouchableOpacity
+                          style={{
+                            marginTop: 10,
+                            height: 54,
+                            borderWidth: 1,
+                            borderColor: colors.gray1,
+                            borderRadius: 8,
+                            paddingHorizontal: 16,
+                            justifyContent: 'center',
+                            backgroundColor: colors.white,
+                          }}
+                          onPress={() => setIsGenderModalVisible(true)}
+                        >
+                          <Text style={{
+                            fontSize: 16,
+                            fontFamily: fonts.onestLight,
+                            color: selectedGender ? colors.black : colors.gray1,
+                          }}>
+                            {selectedGender || 'Gender'}
+                          </Text>
+                        </TouchableOpacity>
+
+                        <GenderModal
+                          isVisible={isGenderModalVisible}
+                          onClose={() => setIsGenderModalVisible(false)}
+                          onSelect={(gender) => setSelectedGender(gender)}
+                          selectedGender={selectedGender}
+                        />
+                        <DateInput
+                          label="Date of birth"
+                          placeholder="YYYY-MM-DD"
+                          value={dateOfBirth}
+                          onSelect={(date) => setDateOfBirth(date)}
+                        />
+                        <Input
+                          defaultCountryCode={countryCode}
+                          onDefualtCodePress={() => {
+                            setShow(true);
+                          }}
+                          type="phone"
+                          placeholder=''
+                          autoCapitalize="none"
+                        />
+                        <SelectInput
+                          placeholder="Marital Status"
+                           options={maritalStatusOptions}
+                           multiSelect={false}
+                           selectedValues={maritalStatus ? [maritalStatus] : []}
+                           onSelect={(values) => setMaritalStatus(values[0] || "")}
+                        />
+                        <SelectInput
+                          placeholder="Language Preference"
+                          options={languageReferenceOptions}
+                          multiSelect={false}
+                          selectedValues={languagePreference ? [languagePreference] : []}
+                          onSelect={(values) => setLanguagePreference(values[0] || "")}
+                        />
+                        <TouchableOpacity
+                          onPress={() => setCurrentStep(2)}
+                          style={{ marginTop: 12, backgroundColor: colors.primary, height: 52, borderRadius: 10, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "white", textAlign: "center" }}>Continue</Text>
+                        </TouchableOpacity>
+                        <View>
+                        </View>
+                      </View>
+                    </>
+                  )
+                }
+
+                {
+                  currentStep == 2 && (
+                    <>
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Professional Details"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        {/* Role Type Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Role Type</Text>
+
+                          {/* Role Type Radio Buttons */}
+                          <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+                            <TouchableOpacity
+                              style={{
+                                flex: 1,
+                                paddingVertical: 16,
+                                paddingHorizontal: 20,
+                                borderRadius: 12,
+                                borderWidth: 1,
+                                borderColor: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
+                                backgroundColor: selectedRoleType === 'professional' ? colors.primary + '10' : colors.white,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                              onPress={() => setSelectedRoleType('professional')}
+                            >
+                              <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 8,
+                              }}>
+                                <View style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  borderWidth: 2,
+                                  borderColor: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
+                                  backgroundColor: selectedRoleType === 'professional' ? colors.primary : 'transparent',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                  {selectedRoleType === 'professional' && (
+                                    <View style={{
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: 4,
+                                      backgroundColor: colors.white,
+                                    }} />
+                                  )}
+                                </View>
+                                <Text style={{
+                                  fontSize: 16,
+                                  fontWeight: "500",
+                                  color: selectedRoleType === 'professional' ? colors.primary : colors.gray1,
+                                }}>
+                                  Professional
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              style={{
+                                flex: 1,
+                                paddingVertical: 16,
+                                paddingHorizontal: 20,
+                                borderRadius: 12,
+                                borderWidth: 1,
+                                borderColor: selectedRoleType === 'family' ? colors.primary : colors.gray1,
+                                backgroundColor: selectedRoleType === 'family' ? colors.primary + '10' : colors.white,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                              onPress={() => setSelectedRoleType('family')}
+                            >
+                              <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 8,
+                              }}>
+                                <View style={{
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 10,
+                                  borderWidth: 2,
+                                  borderColor: selectedRoleType === 'family' ? colors.primary : colors.gray1,
+                                  backgroundColor: selectedRoleType === 'family' ? colors.primary : 'transparent',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                  {selectedRoleType === 'family' && (
+                                    <View style={{
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: 4,
+                                      backgroundColor: colors.white,
+                                    }} />
+                                  )}
+                                </View>
+                                <Text style={{
+                                  fontSize: 16,
+                                  fontWeight: "500",
+                                  color: selectedRoleType === 'family' ? colors.primary : colors.gray1,
+                                }}>
+                                  Family Member
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+
+                        {/* Input Fields */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                          <Input
+                            placeholder='Organization Name'
+                            value={organizationName}
+                            onChangeText={setOrganizationName}
+                          />
+                          <Input
+                            placeholder='Supervisor or Facility Contact info'
+                            value={supervisorContact}
+                            onChangeText={setSupervisorContact}
+                          />
+                        </View>
+
+                        {/* Next Button */}
+                        <TouchableOpacity
+                          onPress={() => {
+                            setCurrentStep(3);
+                            // Handle next step or form submission
+                            console.log('Next pressed for caregiver step 2');
+                          }}
+                          style={{
+                            marginTop: 12,
+                            backgroundColor: colors.primary,
+                            height: 52,
+                            borderRadius: 10,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={{
+                            fontSize: 18,
+                            fontWeight: "700",
+                            color: "white",
+                            textAlign: "center",
+                          }}>
+                            Next
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )
+                }
+                {
+                  currentStep == 3 && (
+                    <>
+                      <View style={{ display: "flex", flexDirection: 'column', gap: 16, }}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <AppHeader
+                            goToScreen="/(auth)/signup"
+                            text="Upload Caregiver Verification"
+                            showBackArrow
+                          />
+                          <CircularProgress
+                            currentStep={currentStep}
+                            totalSteps={3}
+                          />
+                        </View>
+
+                      </View>
+
+                      <View style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                        {/* Uploads Section */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Text style={{ fontSize: 18, fontWeight: "700", color: "#050505" }}>Uploads:</Text>
+
+                          {/* Upload Fields */}
+                          <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            {/* Photo of ID Badge or Certificate */}
+                            <TouchableOpacity
+                              style={{
+                                height: 80,
+                                borderWidth: 1,
+                                borderColor: colors.gray1,
+                                borderRadius: 12,
+                                backgroundColor: colors.white,
+                                paddingHorizontal: 16,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 12,
+                              }}
+                              onPress={() => pickImage('idBadge')}
+                            >
+                              {idBadgeImage ? (
+                                <View style={{
+                                  width: 48,
+                                  height: 48,
+                                  borderRadius: 8,
+                                  overflow: 'hidden',
+                                }}>
+                                  <Image
+                                    source={{ uri: idBadgeImage }}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                    }}
+                                    resizeMode="cover"
+                                  />
+                                </View>
+                              ) : (
+                                <View style={{
+                                  width: 48,
+                                  height: 48,
+                                  backgroundColor: colors.primary + '20',
+                                  borderRadius: 8,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                  <Image
+                                    source={require("../../../assets/images/upload.png")}
+                                    style={{
+                                      width: 24,
+                                      height: 24,
+                                    }}
+                                    resizeMode="cover"
+                                  />
+                                </View>
+                              )}
+                              <Text style={{
+                                fontSize: 16,
+                                fontFamily: fonts.onestLight,
+                                color: idBadgeImage ? colors.black : colors.gray1,
+                                flex: 1,
+                              }}>
+                                {idBadgeImage ? 'ID Badge/Certificate uploaded' : 'Photo of ID Badge or Certificate'}
+                              </Text>
+                            </TouchableOpacity>
+
+                            {/* Photo of ID Organization ID */}
+                            <TouchableOpacity
+                              style={{
+                                height: 80,
+                                borderWidth: 1,
+                                borderColor: colors.gray1,
+                                borderRadius: 12,
+                                backgroundColor: colors.white,
+                                paddingHorizontal: 16,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 12,
+                              }}
+                              onPress={() => pickImage('organizationId')}
+                            >
+                              {organizationIdImage ? (
+                                <View style={{
+                                  width: 48,
+                                  height: 48,
+                                  borderRadius: 8,
+                                  overflow: 'hidden',
+                                }}>
+                                  <Image
+                                    source={{ uri: organizationIdImage }}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                    }}
+                                    resizeMode="cover"
+                                  />
+                                </View>
+                              ) : (
+                                <View style={{
+                                  width: 48,
+                                  height: 48,
+                                  backgroundColor: colors.primary + '20',
+                                  borderRadius: 8,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                  <Image
+                                    source={require("../../../assets/images/upload.png")}
+                                    style={{
+                                      width: 24,
+                                      height: 24,
+                                    }}
+                                    resizeMode="cover"
+                                  />
+                                </View>
+                              )}
+                              <Text style={{
+                                fontSize: 16,
+                                fontFamily: fonts.onestLight,
+                                color: organizationIdImage ? colors.black : colors.gray1,
+                                flex: 1,
+                              }}>
+                                {organizationIdImage ? 'Organization ID uploaded' : 'Photo of ID Organization ID'}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+
+                        {/* Doctor's Zenlyf Code Input */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <Input
+                            placeholder="Add Doctor's Zenlyf Code"
+                            value={doctorsCode}
+                            onChangeText={setDoctorsCode}
+                          />
+                        </View>
+
+                        {/* Independent Caregiver Checkbox */}
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 12 }}>
+                          <TouchableOpacity
+                            style={{
+                              width: 24,
+                              height: 24,
+                              borderRadius: 12,
+                              borderWidth: 2,
+                              borderColor: isIndependentCaregiver ? colors.success : colors.gray1,
+                              backgroundColor: isIndependentCaregiver ? colors.success : 'transparent',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => setIsIndependentCaregiver(!isIndependentCaregiver)}
+                          >
+                            {isIndependentCaregiver && (
+                              <Text style={{
+                                fontSize: 16,
+                                color: colors.white,
+                                fontWeight: 'bold',
+                              }}>
+                                ✓
+                              </Text>
+                            )}
+                          </TouchableOpacity>
+                          <Text style={{
+                            fontSize: 16,
+                            fontFamily: fonts.onestMedium,
+                            color: colors.black,
+                            flex: 1,
+                          }}>
+                            I am an independent Caregiver
+                          </Text>
+                        </View>
+
+                        {/* Action Buttons */}
+                        <View style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 20 }}>
+                          {/* Upload Button */}
+                          <TouchableOpacity
+                            style={{
+                              height: 52,
+                              borderWidth: 1,
+                              borderColor: colors.primary,
+                              borderRadius: 10,
+                              backgroundColor: colors.primary + '10',
+                              flexDirection: 'row',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              gap: 8,
+                            }}
+                            onPress={pickDocument}
+                          >
+                            <Text style={{
+                              fontSize: 18,
+                              color: colors.primary,
+                              fontWeight: '600',
+                            }}>
+                              ↑
+                            </Text>
+                            <Text style={{
+                              fontSize: 16,
+                              fontWeight: "600",
+                              color: colors.primary,
+                            }}>
+                              Upload
+                            </Text>
+                          </TouchableOpacity>
+
+                          {/* Display Uploaded Documents */}
+                          {uploadedDocuments.length > 0 && (
+                            <View style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                              <Text style={{
+                                fontSize: 14,
+                                fontFamily: fonts.onestMedium,
+                                color: colors.black,
+                              }}>
+                                Uploaded Documents ({uploadedDocuments.length}):
+                              </Text>
+                              {uploadedDocuments.map((doc, index) => (
+                                <View key={index} style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  backgroundColor: '#F5F5F5',
+                                  padding: 12,
+                                  borderRadius: 8,
+                                  gap: 8,
+                                }}>
+                                  <Text style={{
+                                    fontSize: 12,
+                                    color: colors.primary,
+                                  }}>
+                                    📄
+                                  </Text>
+                                  <Text style={{
+                                    fontSize: 14,
+                                    fontFamily: fonts.onestMedium,
+                                    color: colors.black,
+                                    flex: 1,
+                                  }}>
+                                    {doc.name}
+                                  </Text>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      setUploadedDocuments(prev => prev.filter((_, i) => i !== index));
+                                    }}
+                                    style={{
+                                      padding: 4,
+                                    }}
+                                  >
+                                    <Text style={{
+                                      fontSize: 16,
+                                      color: colors.red,
+                                      fontWeight: 'bold',
+                                    }}>
+                                      ×
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              ))}
+                            </View>
+                          )}
+
+                          {/* Submit Button */}
+                          <TouchableOpacity
+                            style={{
+                              height: 52,
+                              backgroundColor: colors.primary,
+                              borderRadius: 10,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => {
+                              // Handle submit for manual review
+                              const formattedDateOfBirth = getFormattedDateOfBirth();
+                              console.log('Submit for Manual Review pressed');
+                              console.log('Date of birth for backend:', formattedDateOfBirth);
+                              setHasCompletedSetup(true);
+                              router.push('/(auth)/signup/reviewingDocument');
+                            }}
+                          >
+                            <Text style={{
+                              fontSize: 16,
+                              fontWeight: "700",
+                              color: colors.white,
+                            }}>
+                              Submit for Manual Review
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </>
+                  )
+                }
+              </>
+            )
+          }
         </View>
-     </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default HealthOnboardingOne
+export default HealthOnboardingOne;
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
@@ -1479,9 +1603,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-    scrollContainer: {
-      paddingBottom: 5, 
-      gap:24,   
+  scrollContainer: {
+    paddingBottom: 5,
+    gap: 24,
   },
   text: {
     fontSize: 10,
