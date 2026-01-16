@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
-import { getMe, GetUser } from '../Requesthandler/Auth';
+import { getMe } from '../Requesthandler/Auth';
 
 const Profile = () => {
+  const router = useRouter();
   const [familyName, setFamilyName] = useState('');
   const [familyPhone, setFamilyPhone] = useState('');
   const [userData, setUserData] = useState<any>(null);
@@ -22,6 +24,35 @@ const Profile = () => {
     catch(error:any){
       console.log("Error fetching user data",error);
       setLoading(false);
+      
+      // If the error message indicates session expired, redirect to login
+      if (error.message && error.message.includes("Session expired")) {
+        Alert.alert(
+          "Session Expired",
+          "Your session has expired. Please login again.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.replace("/(auth)/signin")
+            }
+          ]
+        );
+      } else {
+        Alert.alert(
+          "Error",
+          "Failed to load profile data. Please try again.",
+          [
+            {
+              text: "Retry",
+              onPress: () => getUserData()
+            },
+            {
+              text: "Cancel",
+              style: "cancel"
+            }
+          ]
+        );
+      }
     }
   }
 
@@ -87,9 +118,11 @@ const Profile = () => {
   );
 
   if(loading){
-  <View style={styles.loadingContainer}>
-    <ActivityIndicator size="large" color={colors.primary} />
-  </View>
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
   }
 
   return (

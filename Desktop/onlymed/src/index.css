@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+/* Position Swiper Pagination at Bottom */
+.services-carousel .swiper-pagination {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.services-carousel .swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  background: #cbd5e1;
+  opacity: 1;
+  margin: 0 3px!important;
+  transition: all 0.3s ease;
+}
+
+.services-carousel .swiper-pagination-bullet-active {
+  background: #2987F3;
+  width: 12px;
+  border-radius: 6px;
+}
+
+/* Vision Carousel - Equal Height Slides */
+.vision-carousel .swiper-wrapper {
+  align-items: stretch !important;
+}
+
+.vision-carousel .swiper-slide {
+  height: auto !important;
+  display: flex !important;
+}
+
+/* Vision Carousel Pagination */
+.vision-carousel .swiper-pagination {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 2rem!important;
+  text-align: center;
+}
+
+.vision-carousel .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #cbd5e1;
+  opacity: 1;
+  margin: 0 5px!important;
+  transition: all 0.3s ease;
+}
+
+.vision-carousel .swiper-pagination-bullet-active {
+  background: #2987F3;
+  width: 24px;
+  border-radius: 5px;
+}
+@layer utilities {
+  .padding {
+    @apply sm:px-16 px-8 sm:py-24 py-12;
+  }
+
+  .padding-x {
+    @apply sm:px-16! px-8!;
+  }
+
+  .padding-y {
+    @apply sm:py-24! py-12!;
+  }
+
+  .padding-l {
+    @apply sm:pl-16 pl-8;
+  }
+
+  .padding-r {
+    @apply sm:pr-16 pr-8;
+  }
+
+  .padding-t {
+    @apply sm:pt-24 pt-12;
+  }
+
+  .padding-b {
+    @apply sm:pb-24 pb-12;
+  }
+
+}
+

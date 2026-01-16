@@ -3,19 +3,35 @@ import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../Config/colors';
 import { fonts } from '../../Config/Fonts';
+import { useUser } from '../../contexts/UserContext';
+import { clearAuthToken } from '../Requesthandler/Auth';
 
 const Logout = () => {
   const router = useRouter();
+  const { clearUserData } = useUser();
 
   const handleCancel = () => {
     router.back();
   };
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    // Here you would typically clear user session, tokens, etc.
-    // For now, we'll just navigate to the home screen
-    router.replace('/');
+  const handleLogout = async () => {
+    console.log('User logging out...');
+    try {
+      // Clear auth tokens and metadata
+      await clearAuthToken();
+      
+      // Clear user context data
+      await clearUserData();
+      
+      console.log('Logout successful, redirecting to index');
+      
+      // Navigate to the main index page (which will trigger the auth flow)
+      router.replace('/');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Still navigate away even if there's an error
+      router.replace('/');
+    }
   };
 
   return (

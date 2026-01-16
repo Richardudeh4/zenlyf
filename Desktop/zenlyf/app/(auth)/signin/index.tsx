@@ -5,15 +5,15 @@ import P from '@/components/P';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useUser } from '../../../contexts/UserContext';
 
@@ -34,31 +34,54 @@ const SignInScreen = () => {
         password: password
       };
       
-      console.log('Sign in:', { email, password, role: selectedRole });
+      console.log('=== Login Attempt ===');
+      console.log('Email:', email);
+      console.log('Role:', selectedRole);
+      
       const response = await Login(loginData);
-      console.log("Login response:", response);
+      console.log("=== Login Response ===");
+      console.log("Full response:", response);
+      console.log("Access token exists:", !!response?.access_token);
+      console.log("Refresh token exists:", !!response?.refresh_token);
       
       // Save the tokens - map access_token and refresh_token to access and refresh
       if (response?.access_token && response?.refresh_token) {
-        await saveAuthToken({
+        const tokenData = {
           access: response.access_token,
           refresh: response.refresh_token
+        };
+        
+        console.log("=== Saving Tokens ===");
+        console.log("Token data to save:", {
+          access: tokenData.access.substring(0, 20) + "...",
+          refresh: tokenData.refresh.substring(0, 20) + "..."
         });
-        console.log("Tokens saved successfully");
+        console.log("User role:", selectedRole);
+        
+        // Save token with user role for 4-day expiration tracking
+        await saveAuthToken(tokenData, selectedRole as 'user' | 'caregiver' | 'doctor');
+        console.log("Tokens saved successfully with role");
         setIsLoggedIn(true);
-      }
-      
-      if (selectedRole === 'doctor') {
-        router.replace('/(doctor-tabs)');
-      } else if (selectedRole === 'caregiver') {
-        router.replace('/(caregiver-tabs)');
+        
+        if (selectedRole === 'doctor') {
+          router.replace('/(doctor-tabs)');
+        } else if (selectedRole === 'caregiver') {
+          router.replace('/(caregiver-tabs)');
+        } else {
+          // Default to regular tabs for 'myself' role
+          router.replace('/(tabs)');
+        }
       } else {
-        // Default to regular tabs for 'myself' role
-        router.replace('/(tabs)');
+        console.error("=== Token Missing ===");
+        console.error("Response does not contain required tokens");
+        setIsLoading(false);
+        alert("Login failed: Invalid response from server");
       }
     } catch (error: any) {
       setIsLoading(false);
-      console.log(error);
+      console.error("=== Login Error ===");
+      console.error("Error:", error);
+      alert("Login failed: " + (error.message || "Unknown error"));
     }
   };
 
